@@ -1,6 +1,6 @@
 from .RotTable import RotTable
 from .Traj3D import Traj3D
-
+from .recuit_simule import *
 import argparse
 parser = argparse.ArgumentParser()
 parser.add_argument("filename", help="input filename of DNA sequence")
@@ -11,15 +11,14 @@ def main():
 
     rot_table = RotTable()
     traj = Traj3D()
-
+    
     # Read file
     lineList = [line.rstrip('\n') for line in open(args.filename)]
     # Formatting
     seq = ''.join(lineList[1:])
+    
     traj.compute(seq, rot_table)
-
-    print(traj.getTraj())
-
+    print(evaluation(traj))
     traj.draw()
     traj.write(args.filename+".png")
 
