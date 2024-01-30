@@ -1,5 +1,6 @@
 from .RotTable import RotTable
 from .Traj3D import Traj3D
+from .genetic_algorithm import GeneticAlgorithm
 
 import argparse
 parser = argparse.ArgumentParser()
