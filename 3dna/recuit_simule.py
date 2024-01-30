@@ -4,26 +4,6 @@ import time
 from random import *
 from copy import deepcopy
 
-def evaluation(traj): #On calcule la distance euclidienne entre le premier point et le dernier point, on cherchera donc à minimiser cette valeur 
-        xyz = np.array(traj.getTraj())
-        x, y, z = xyz[:,0], xyz[:,1], xyz[:,2]
-        return np.sqrt((x[0]-x[-1])**2 + (y[0]-y[-1])**2 + (z[0]-z[-1])**2)
-
-
-def test_evaluation():
-    rot_table = RotTable()
-    traj = Traj3D()
-    
-    # Read file
-    lineList = [line.rstrip('\n') for line in open("data/plasmid_8k.fasta")]
-    # Formatting
-    seq = ''.join(lineList[1:])
-    
-    traj.compute(seq, rot_table)
-    print(evaluation(traj))
-    assert(evaluation(traj)==2)
-
-
 def voisins(table:RotTable, p: float):        
         """
         Entrée : table de rotation, p : floattant paramètre
@@ -88,26 +68,32 @@ def voisins(table:RotTable, p: float):
                 new_table_list.append(new_moins_Wedge)
         return new_table_list
                
+               
+               
 def recuit_simule(seq,trajectoire):
         tps_init = time.process_time()
         temps = 0
         table = RotTable()
-        eval = evaluation(trajectoire)
-        temperature = 100
-        coeff = 1
-        while(temps < 100 and temperature > 0.1):
+        eval = trajectoire.getEval()
+        temperature = 10
+        coeff = 10
+        compteur = 0
+        while(temps < 200 and temperature > 0.1):
                 nombre_aleatoire = uniform(0,1) # On choisit un nombre uniformement dans [0,1]
                 for table_n in voisins(table, coeff*nombre_aleatoire): # Pour tous les voisins de la table s, on calcule sa trajectoire ainsi que son énergie
                         trajectoire.compute(seq, table_n) 
-                        eval_n = evaluation(trajectoire)
-                        if(eval_n < eval or nombre_aleatoire < math.exp((eval-eval_n)/temperature)):
+                        eval_n = trajectoire.getEval()
+                        if (eval_n < eval or nombre_aleatoire < math.exp((eval-eval_n)/temperature)):
+                                compteur += 1
                                 table = table_n
                                 eval = eval_n
                 temperature = 0.95*temperature # On change la temperature
-                tpsi = time.process_time()
-                temps = tpsi-tps_init # On actualise le temps
-                coeff = 0.95*coeff    
-        print(temperature)
+                temps = time.process_time()-tps_init # On actualise le temps
+                coeff = 0.90*coeff    
+        print("temperature de fin", temperature)
+        print("temps d'execution", temps) 
+        print(coeff)
+        print("nombre de fois que la table a été modifiée", compteur)
         trajectoire = trajectoire.compute(seq,table)
         print(table.getTable())
 

@@ -107,3 +107,28 @@ Result : Arret à cause de la température (0.09)
 Distance : 3.57
 Table : {'AA': [35.71844531944362, 7.2, -154, 0.06, 0.6, 0], 'AC': [0.20647751243696078, 1.1, 143, 1.3, 5, 0], 'AG': [27.7, 8.4, 2, 1.5, 3, 0], 'AT': [31.5, 1.7927351704539343, 0, 1.1, 2, 0], 'CA': [34.5, 52.739014663297965, -64, 0.9, 34, 0], 'CC': [34.00449668625695, 1.377565522248767, -57, 0.07, 2.1, 0], 'CG': [29.8, 6.7, 0, 1.1, 1.5, 0], 'CT': [27.7, 8.4, -2, 1.5, 3, 0], 'GA': [36.9, 39.88289557686061, 120, 0.9, 6, 0], 'GC': [40, 2.1798128493823574, 180, 1.2, 1.275, 0], 'GG': [34.00449668625695, 1.377565522248767, 57, 0.07, 2.1, 0], 'GT': [0.20647751243696078, 1.1, -143, 1.3, 5, 0], 'TA': [36, -4.615584298065193, 0, 1.1, 2, 0], 'TC': [36.9, 39.88289557686061, -120, 0.9, 6, 0], 'TG': [34.5, 52.739014663297965, 64, 0.9, 34, 0], 'TT': [35.71844531944362, 7.2, 154, 0.06, 0.6, 0]}
 
+------------- 
+
+Best Simulation 
+
+Temps = 200 sec
+p = coeff*nombre_aléatoire
+Température : T' = 0.95*T et Tinit = 10
+coeff initial = 10 et C(i+1) = 0.90*C(i)       (permet de beaucoup bouger au début...)
+
+Result : Arret à cause du temps
+Température de fin : 0.149
+Nombre de modifications de la table : 824
+Distance : 0.10195376621404287      (les autres tests donnent de bon résultats < 0.4)
+Table :{'AA': [35.674594621902884, 7.1975908950209435, -154, 0.06, 0.6, 0], 'AC': [34.4, 1.1, 143, 1.3, 5, 0], 'AG': [27.7, 8.4, 2, 1.5, 3, 0], 'AT': [31.5, 1.351690282296053, 0, 1.1, 2, 0], 'CA': [34.51777797361969, 157.96221758724872, -64, 0.9, 34, 0], 'CC': [33.83692038118578, 2.1, -57, 0.07, 2.1, 0], 'CG': [29.8, 6.7, 0, 1.1, 1.5, 0], 'CT': [27.7, 8.4, -2, 1.5, 3, 0], 'GA': [36.9, 5.3, 120, 0.9, 6, 0], 'GC': [41.30337312799549, 4.7185023052358845, 180, 1.2, 1.275, 0], 'GG': [33.83692038118578, 2.1, 57, 0.07, 2.1, 0], 'GT': [34.4, 1.1, -143, 1.3, 5, 0], 'TA': [46.85824521043872, 0.726432091661609, 0, 1.1, 2, 0], 'TC': [36.9, 5.3, -120, 0.9, 6, 0], 'TG': [34.51777797361969, 157.96221758724872, 64, 0.9, 34, 0], 'TT': [35.674594621902884, 7.1975908950209435, 154, 0.06, 0.6, 0]}
+
+
+OK enfait c'est super on trouve des résultats géniaux mais c'est plutôt normal : 
+On cherche juste à minimiser la distance sans imposer de continuité entre le dernier et le premier point, ce qui fait que l'on peut trouver des tables qui vont minimiser notre distance jusqu'à 0 mais ont ils vraiment un sens physique ??
+Il faut rajouter une condition sur notre fonction a minimiser : 
+    - on calcule la norme 2 (distance) entre les 2 points
+    - on calcule aussi la différence entre les tangentes 
+
+Ainsi on aura quelquechose de plus "smooth" et qui a une réalité physique
+
+Amélioration encore possible : étudier carrément TOUTE la courbe pour s'assurer que la déformation reste continue -> BEAUCOUP TROP DE CALCUL : impossible

@@ -21,7 +21,7 @@ def main():
     seq = ''.join(lineList[1:])
     traj.compute(seq,rot_table)
     recuit_simule(seq,traj)
-    print(evaluation(traj))
+    print(traj.getLength())
     traj.draw()
     traj.write(args.filename+".png")
 

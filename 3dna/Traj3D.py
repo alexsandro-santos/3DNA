@@ -92,3 +92,24 @@ class Traj3D:
     def write(self, filename: str):
         self.fig.savefig(filename)
         
+    def getLength(self) -> float:
+        # We optimise a bit by not taking start (because it's [0, 0, 0]) our code is less flexible but a bit faster (we will call getLength a lot)
+        # start,end= self.__Traj3D[0],self.__Traj3D[-1]
+        # return np.linalg.norm(end-start)
+        end = self.__Traj3D[-1]
+        return np.linalg.norm(end)
+    
+    def getDerivatives(self) -> float:
+        end, end_1, start = self.__Traj3D[-1], self.__Traj3D[-2], self.__Traj3D[0]
+        vecteur1 = [end_1[0]-end[0], end_1[1]-end[1], end_1[2]-end[2]]
+        vecteur2 = [start[0]-end[0], start[1]-end[1], start[2]-end[2]]
+        produit_scalaire = np.dot(vecteur1, vecteur2)
+        cos_angle = produit_scalaire/(np.linalg.norm(vecteur1)*np.linalg.norm(vecteur2))
+        # On a calculé cos(theta) où theta est l'angle formé par l'avant dernier, le dernier et le premier point de la trajectoire.
+        # On cherche alors à maximiser ce cosinus (donc à minimiser 1-abs(cos_angle)) pour avoir quelque chose de "continu"
+        return 1-abs(cos_angle)
+    
+    def getEval(self) -> float:
+        return self.getDerivatives() + self.getLength()
+        
+        
