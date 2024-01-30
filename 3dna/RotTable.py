@@ -40,5 +40,11 @@ class RotTable:
     
     def getTable(self) -> dict:
         return self.rot_table
+    
+    def getNonSymmetric(self) -> dict:
+        dict=self.rot_table
+        NonSimetric={dict.pop("AA"),dict.pop("AC"),dict.pop("AG"),dict.pop("CA"),dict.pop("CC"),dict.pop("GA"),dict.pop("AT"),dict.pop("GC"),dict.pop("CG"),dict.pop("TA")}
+        return NonSimetric
+
 
     ###################
