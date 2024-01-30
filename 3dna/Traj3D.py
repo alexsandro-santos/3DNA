@@ -109,7 +109,10 @@ class Traj3D:
         # On cherche alors à maximiser ce cosinus (donc à minimiser 1-abs(cos_angle)) pour avoir quelque chose de "continu"
         return 1-abs(cos_angle)
     
+    
     def getEval(self) -> float:
-        return self.getDerivatives() + self.getLength()
+        # Eval est notre fonction "objectif". La question qui se pose est "comment pondérer correctement entre la longueur et la condition de continuité ?"
+        # Avec quelques test, cette pondération donne de bons résultats
+        return 2*self.getDerivatives() + self.getLength()
         
         

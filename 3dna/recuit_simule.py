@@ -11,7 +11,7 @@ def voisins(table:RotTable, p: float):
 
         """
         new_table_list = []
-        table_dic = table.getTable()            # On prends table_dic pour pouvoir acceder aux écarts-types
+        table_dic = table.getTable()            # On tranforme la table en un dictionnaire table_dic pour pouvoir acceder aux écarts-types
         
         # lcouple contient la liste des couple possibles suivi de leur complémentaire : "AA" suivi de "TT". /!\ On inclut pas les couples qui sont leur propres complémentaires (AT, GC, GC, TA)
         lcouple = ["AA", "TT", "AC", "GT", "AG", "CT", "CA", "TG", "CC", "GG", "GA", "TC"]

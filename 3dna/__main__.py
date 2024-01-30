@@ -22,6 +22,7 @@ def main():
     traj.compute(seq,rot_table)
     recuit_simule(seq,traj)
     print(traj.getLength())
+    print(traj.getDerivatives())
     traj.draw()
     traj.write(args.filename+".png")
 
