@@ -18,7 +18,7 @@ def exponentielle(x, y):
 
 def voisins(table:RotTable, p: float):          # On a une table et on veut renvoyer une liste de 32 tables tel que l'on a modifié chaque coefficient proportionnellement à son écart type
         new_table_list = []
-        table = table.getTable
+        table_dic = table.getTable()            # On prends table_dic pour pouvoir acceder aux écarts-types
         
         # lcouple contient la liste des couple possibles suivi de leur complémentaire : "AA" suivi de "TT". /!\ On inclut pas les couples qui sont leur propres complémentaires (AT, GC, GC, TA)
         lcouple = ["AA", "TT", "AC", "GT", "AG", "CT", "CA", "TG", "CC", "GG", "GA", "TC"]
@@ -32,46 +32,46 @@ def voisins(table:RotTable, p: float):          # On a une table et on veut renv
                 # Modif le twist 
                 
                 new_plus_Twist = deepcopy(table)
-                new_plus_Twist.setTwist(couple, table[couple][0] + p*table[couple][3])  # table["AA"][3] écart type pour le twist de AA et # table["AA"][0] pour la valeur
-                new_plus_Twist.setTwist(compl, table[compl][0] + p*table[compl][3])  # Implique changement du complémentaire  
+                new_plus_Twist.setTwist(couple, table.getTwist(couple) + p*table_dic[couple][3])  # table["AA"][3] écart type pour le twist de AA et # table["AA"][0] pour la valeur
+                new_plus_Twist.setTwist(compl, table.getTwist(couple) + p*table_dic[compl][3])  # Implique changement du complémentaire  
                 new_table_list.append(new_plus_Twist)
 
                 new_moins_Twist = deepcopy(table)
-                new_moins_Twist.setTwist(couple, table[couple][0] - p*table[couple][3]) 
-                new_moins_Twist.setTwist(compl, table[compl][0] - p*table[compl][3])  
+                new_moins_Twist.setTwist(couple, table.getWedge(couple) - p*table_dic[couple][3]) 
+                new_moins_Twist.setTwist(compl, table.getWedge(compl) - p*table_dic[compl][3])  
                 new_table_list.append(new_moins_Twist)
                 
                 # Modif le wedge
                 
                 new_plus_Wedge = deepcopy(table)
-                new_plus_Wedge.setWedge(couple, table[couple][1] + p*table[couple][4]) 
-                new_plus_Wedge.setWedge(compl, table[compl][1] + p*table[compl][4])  
+                new_plus_Wedge.setWedge(couple, table.getTwist(couple) + p*table_dic[couple][4]) 
+                new_plus_Wedge.setWedge(compl, table.getTwist(compl) + p*table_dic[compl][4])  
                 new_table_list.append(new_plus_Wedge)
                 
                 new_moins_Wedge = deepcopy(table)
-                new_moins_Wedge.setWedge(couple, table[couple][1] - p*table[couple][4]) 
-                new_moins_Wedge.setWedge(compl, table[compl][1] - p*table[compl][4])  
+                new_moins_Wedge.setWedge(couple, table.getWedge(couple) - p*table_dic[couple][4]) 
+                new_moins_Wedge.setWedge(compl, table.getWedge(compl) - p*table_dic[compl][4])  
                 new_table_list.append(new_moins_Wedge)
         
         for i in range(len(lcouple2)):
                 couple = lcouple2[i]
                 
                 new_plus_Twist = deepcopy(table)
-                new_plus_Twist.setTwist(couple, table[couple][0] + p*table[couple][3])  
+                new_plus_Twist.setTwist(couple, table.getTwist(couple) + p*table_dic[couple][3])  
                 new_table_list.append(new_plus_Twist)
 
                 new_moins_Twist = deepcopy(table)
-                new_moins_Twist.setTwist(couple, table[couple][0] - p*table[couple][3]) 
+                new_moins_Twist.setTwist(couple, table.getTwist(couple) - p*table_dic[couple][3]) 
                 new_table_list.append(new_moins_Twist)
                 
                 # Modif le wedge
                 
                 new_plus_Wedge = deepcopy(table)
-                new_plus_Wedge.setWedge(couple, table[couple][1] + p*table[couple][4]) 
+                new_plus_Wedge.setWedge(couple, table.getWedge(couple) + p*table_dic[couple][4]) 
                 new_table_list.append(new_plus_Wedge)
                 
                 new_moins_Wedge = deepcopy(table)
-                new_moins_Wedge.setWedge(couple, table[couple][1] - p*table[couple][4]) 
+                new_moins_Wedge.setWedge(couple, table.getWedge(couple) - p*table_dic[couple][4]) 
                 new_table_list.append(new_moins_Wedge)
         return new_table_list
 
