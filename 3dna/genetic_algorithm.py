@@ -1,4 +1,4 @@
-from random import randint, gauss, uniform, choices
+from random import randint, gauss, uniform, choices,sample
 from copy import deepcopy
 from .RotTable import RotTable
 from .Traj3D import Traj3D
@@ -22,12 +22,12 @@ class GeneticAlgorithm:
         self.population.append(self.og_table)
         self.population.extend([uniform_randomize(self.og_table) for _ in range(self.__population_size - 1)])
     
-    def evaluate(self,seq):
+    def evaluate(self,seq,traj):
         self.scores = []
         for table in self.population:
-            traj = Traj3D()
             traj.compute(seq,table)
             self.scores += [traj.getLength()]
+        return self.scores
 
 
     def crossover(self):
@@ -119,3 +119,27 @@ def read_file(path):
     seq = ''.join(lineList[1:])
 
     return seq
+
+def selection(genetic,seq,traj):
+
+    populations = genetic.population
+    score = genetic.evaluate(seq,traj)
+    populationscore = [(populations[i],score[i]) for i in range(len(genetic.population))]
+    populationbis = []
+    while(len(populationscore)>1):
+        deux_elements_aleatoires = sample(populationscore, 2)
+        for element in deux_elements_aleatoires:
+            populationscore.remove(element)
+        t1,s1 = deux_elements_aleatoires[0]
+        t2,s2 = deux_elements_aleatoires[1]
+        if (s1>s2):
+            populationbis.append(t2)
+            #print(f"les élements aléatoires : {deux_elements_aleatoires}, le selectionné : {(t2,s2)}")
+        else:
+            populationbis.append(t1)
+            #print(f"les élements aléatoires : {deux_elements_aleatoires}, le selectionné : {(t1,s1)}")
+    for element in populationscore: #Maybe change this, if we have an odd number of population,we keep the one who didn't fight 
+        a,_ = element
+        populationbis.append(a)
+    genetic.population = populationbis
+    genetic.population_size = len(populationbis)
