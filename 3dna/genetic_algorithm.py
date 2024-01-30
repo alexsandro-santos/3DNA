@@ -1,13 +1,14 @@
-from random import randint, gauss, uniform, choice,sample
+from random import randint, gauss, uniform, choice, sample, random
 from copy import deepcopy
 from .RotTable import RotTable
 from .Traj3D import Traj3D
 
 class GeneticAlgorithm:
-    def __init__(self, population_size: int, og_table: RotTable) -> None:
+    def __init__(self, population_size: int, og_table: RotTable, mutation_prob: float) -> None:
         self.__population_size = population_size
         self._population = []
         self.og_table = og_table
+        self.__mutation_prob = mutation_prob
         self._populate()
 
     @property
@@ -37,7 +38,13 @@ class GeneticAlgorithm:
             new_population.extend([child1,child2])
         
         self.population = new_population
-        
+
+    def mutation(self):
+        new_population = []
+        for table in self.population:
+            if random() <= self.__mutation_prob:
+                pass #TODO finish the implementation
+
 
 ##############################################################################################################
 
@@ -120,21 +127,6 @@ def read_file(path):
     seq = ''.join(lineList[1:])
 
     return seq
-
-def simple_crossover(parent1: RotTable, parent2: RotTable):
-        cross_point = randint(1,9)
-        non_symmetric_elements = ["AA","AC","AG","CA","CC","GA","AT","GC","CG","TA"]
-        child1 = deepcopy(parent1)
-        child2 = deepcopy(parent2)
-
-        for i in range(cross_point):
-            child1.setTwist(non_symmetric_elements[i], parent2.getTwist(non_symmetric_elements[i]))
-            child1.setWedge(non_symmetric_elements[i], parent2.getWedge(non_symmetric_elements[i]))
-            
-            child2.setTwist(non_symmetric_elements[i], parent1.getTwist(non_symmetric_elements[i]))
-            child2.setWedge(non_symmetric_elements[i], parent1.getWedge(non_symmetric_elements[i]))
-        
-        return child1, child2
 
 def simple_crossover(parent1: RotTable, parent2: RotTable):
         cross_point = randint(1,9)
