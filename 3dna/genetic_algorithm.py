@@ -1,4 +1,5 @@
 from random import getrandbits,gauss,uniform
+from copy import deepcopy
 from .RotTable import RotTable
 from .Traj3D import Traj3D
 
@@ -22,7 +23,7 @@ class GeneticAlgorithm:
         self.population.append(self.og_table)
 
 def gaussian_mutation(table):
-    new_table = table.copy()
+    new_table = deepcopy(table)
 
     for dinucleotide in table:
         for i in range(2):
@@ -31,7 +32,7 @@ def gaussian_mutation(table):
 
 def uniform_mutation(table):
     #uniform: (-2sigma,+2sigma)
-    new_table = table.copy()
+    new_table = deepcopy(table)
     for dinucleotide in table:
         for i in range(2):
             lb=-2*dinucleotide[i+3]
