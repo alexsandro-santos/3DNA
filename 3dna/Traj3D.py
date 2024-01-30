@@ -91,3 +91,7 @@ class Traj3D:
 
     def write(self, filename: str):
         self.fig.savefig(filename)
+
+    def getLength(self) -> float:
+        start,end= self.__Traj3D[0],self.__Traj3D[-1]
+        return np.linalg.norm(end-start)

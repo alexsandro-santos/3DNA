@@ -1,4 +1,6 @@
-from random import getrandbits
+from random import getrandbits,gauss,uniform
+from .RotTable import RotTable
+from .Traj3D import Traj3D
 
 class GeneticAlgorithm:
     def __init__(self, population_size) -> None:
