@@ -5,10 +5,9 @@ from random import *
 from copy import deepcopy
 
 def evaluation(traj): #On calcule la distance euclidienne entre le premier point et le dernier point, on cherchera donc à minimiser cette valeur 
-        vec1 = traj.getTraj()[0]
-        vec2 = traj.getTraj()[-1]
-        diff = vec1 - vec2
-        return diff.length
+        xyz = np.array(traj.getTraj())
+        x, y, z = xyz[:,0], xyz[:,1], xyz[:,2]
+        return np.sqrt((x[0]-x[-1])**2 + (y[0]-y[-1])**2 + (z[0]-z[-1])**2)
 
 def test_evaluation():
     rot_table = RotTable()
@@ -34,7 +33,7 @@ def voisins(table:RotTable, p: float):          # On a une table et on veut renv
         lcouple = ["AA", "TT", "AC", "GT", "AG", "CT", "CA", "TG", "CC", "GG", "GA", "TC"]
         # lcouple2 contient les couples qui sont leur propres complémentaires
         lcouple2 = ["AT", "GC", "GC", "TA"]
-        for i in range(0,lcouple,2):
+        for i in range(0,len(lcouple),2):
                 # A chaque couple (et son complémentaire) on fait +- son écart type pour le twist et aussi pour le wedge
                 couple = lcouple[i]
                 compl = lcouple[i+1]
@@ -84,10 +83,7 @@ def voisins(table:RotTable, p: float):          # On a une table et on veut renv
                 new_moins_Wedge.setWedge(couple, table[couple][1] - p*table[couple][4]) 
                 new_table_list.append(new_moins_Wedge)
         return new_table_list
-
-
-        
-        
+               
 def recuit_simule(seq):
         tps_init = time.clock()
         temps = 0
@@ -97,8 +93,8 @@ def recuit_simule(seq):
 
         while(temps < 100 and temperature > 0.1):
                 nombre_aleatoire = uniform() #On choisi un nombre uniformement dans [0,1]
-                for sn in voisin(s): #Pour tous les voisins de la table s, on calcule sa trajectoire ainsi que son énergie
-                        trajectoire.compute(sequence,sn) 
+                for sn in voisins(s): #Pour tous les voisins de la table s, on calcule sa trajectoire ainsi que son énergie
+                        trajectoire.compute(seq,sn) 
                         en = evaluation(trajectoire)
                         if(en<e or nombre_aleatoire < exponentielle(en-e,temperature)):
                                 s = sn
