@@ -35,7 +35,7 @@ class GeneticAlgorithm:
             choice=choices(self.population,k=2)
             parent1=choice[0]
             parent2=choice[1]
-            child1, child2 = self._crossover(parent1,parent2)
+            child1, child2 = self._crossover(parent1,parent2) #TODO: Implement crossover
             new_population.append(child1,child2)
         
 
