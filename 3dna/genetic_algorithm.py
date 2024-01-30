@@ -19,5 +19,19 @@ class GeneticAlgorithm:
     def _populate(self):
         self.population += [getrandbits(32) for _ in range(self.__population_size)]
 
-alg = GeneticAlgorithm(10)
-print(*[f'{gene:032b}' for gene in alg.population],sep='\n')
+def gaussian_mutation(table):
+    new_table = table.copy()
+
+    for dinucleotide in table:
+        for i in range(2):
+            new_table[dinucleotide][i] += gauss(0, dinucleotide[i+3])
+    return new_table
+
+def uniform_mutation(table):
+    new_table = table.copy()
+    for dinucleotide in table:
+        for i in range(2):
+            lb=-dinucleotide[i+3]
+            ub=+dinucleotide[i+3]
+            new_table[dinucleotide][i] += uniform(lb,ub)
+    return new_table
