@@ -84,25 +84,25 @@ def voisins(table:RotTable, p: float):          # On a une table et on veut renv
                 new_table_list.append(new_moins_Wedge)
         return new_table_list
                
-def recuit_simule(seq):
-        tps_init = time.clock()
+def recuit_simule(seq,trajectoire):
+        tps_init = time.process_time()
         temps = 0
         s = RotTable()
-        e = evaluation(s,seq)
+        e = evaluation(trajectoire)
         temperature = 1 
 
-        while(temps < 100 and temperature > 0.1):
-                nombre_aleatoire = uniform() #On choisi un nombre uniformement dans [0,1]
-                for sn in voisins(s): #Pour tous les voisins de la table s, on calcule sa trajectoire ainsi que son énergie
+        while(temps < 20 and temperature > 0.1):
+                nombre_aleatoire = uniform(0,1) #On choisi un nombre uniformement dans [0,1]
+                for sn in voisins(s,1): #Pour tous les voisins de la table s, on calcule sa trajectoire ainsi que son énergie
                         trajectoire.compute(seq,sn) 
                         en = evaluation(trajectoire)
-                        if(en<e or nombre_aleatoire < exponentielle(en-e,temperature)):
+                        if(en<e or nombre_aleatoire < exponentielle(e-en,temperature)):
                                 s = sn
                                 e = en
                 temperature = 0.99 * temperature #On change la temperature
-                tpsi = time.clock() 
+                tpsi = time.process_time()
                 temps = tpsi-tps_init #On actualise le temps    
         print(temperature)
-        trajectoire = trajectoire.compute(s)
-        return trajectoire
+        trajectoire = trajectoire.compute(seq,s)
+        print(s.getTable)
 
