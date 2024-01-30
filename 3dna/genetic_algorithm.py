@@ -32,8 +32,9 @@ class GeneticAlgorithm:
     def crossover(self):
         new_population = []
         for i in range(self.__population_size):
-            parent1 = choices(self.population,k=2)[0]#consider using weighted choices
-            parent2 = choices(self.population,k=2)[0]
+            choice=choices(self.population,k=2)
+            parent1=choice[0]
+            parent2=choice[1]
             child1, child2 = self._crossover(parent1,parent2)
             new_population.append(child1,child2)
         
