@@ -7,6 +7,10 @@ parser.add_argument("filename", help="input filename of DNA sequence")
 parser.parse_args()
 args = parser.parse_args()
 
+def dist(x,y): #On calcule la distance euclidienne entre le premier point et le dernier point, on cherchera donc à minimiser cette valeur 
+        return np.sqrt((x[0]-y[0])**2 + (x[1]-y[1])**2 + (x[2]-y[2])**2)
+
+
 def main():
     #Initialisation de la table, et de la trajectoire
     rot_table = RotTable()

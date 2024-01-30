@@ -9,6 +9,7 @@ def evaluation(traj): #On calcule la distance euclidienne entre le premier point
         x, y, z = xyz[:,0], xyz[:,1], xyz[:,2]
         return np.sqrt((x[0]-x[-1])**2 + (y[0]-y[-1])**2 + (z[0]-z[-1])**2)
 
+
 def test_evaluation():
     rot_table = RotTable()
     traj = Traj3D()
@@ -22,10 +23,13 @@ def test_evaluation():
     print(evaluation(traj))
     assert(evaluation(traj)==2)
 
-def exponentielle(x, y):
-        return math.exp(x / y)
 
-def voisins(table:RotTable, p: float):          # On a une table et on veut renvoyer une liste de 32 tables tel que l'on a modifié chaque coefficient (et son complémentaire) proportionnellement à son écart type
+def voisins(table:RotTable, p: float):        
+        """
+        Entrée : table de rotation, p : floattant paramètre
+        Sortie : Liste de 40 tables de rotation, où l'on a modifié chaque coefficient (et son complémentaire s'il existe). On fait une table ou on ajoute p*ecart_type et une ou on fait - p*ecart_type
+
+        """
         new_table_list = []
         table_dic = table.getTable()            # On prends table_dic pour pouvoir acceder aux écarts-types
         
@@ -62,7 +66,7 @@ def voisins(table:RotTable, p: float):          # On a une table et on veut renv
                 new_moins_Wedge.setWedge(compl, table.getWedge(compl) - p*table_dic[compl][4])  
                 new_table_list.append(new_moins_Wedge)
         
-        for i in range(len(lcouple2)):
+        for i in range(len(lcouple2)):                  # Cas des dinucléotides qui sont leur propres complémentaires
                 couple = lcouple2[i]
                 
                 new_plus_Twist = deepcopy(table)
@@ -87,22 +91,25 @@ def voisins(table:RotTable, p: float):          # On a une table et on veut renv
 def recuit_simule(seq,trajectoire):
         tps_init = time.process_time()
         temps = 0
-        s = RotTable()
-        e = evaluation(trajectoire)
-        temperature = 1 
-
-        while(temps < 20 and temperature > 0.1):
-                nombre_aleatoire = uniform(0,1) #On choisi un nombre uniformement dans [0,1]
-                for sn in voisins(s,1): #Pour tous les voisins de la table s, on calcule sa trajectoire ainsi que son énergie
-                        trajectoire.compute(seq,sn) 
-                        en = evaluation(trajectoire)
-                        if(en<e or nombre_aleatoire < exponentielle(e-en,temperature)):
-                                s = sn
-                                e = en
-                temperature = 0.99 * temperature #On change la temperature
+        table = RotTable()
+        eval = evaluation(trajectoire)
+        temperature = 100
+        coeff = 1
+        while(temps < 100 and temperature > 0.1):
+                nombre_aleatoire = uniform(0,1) # On choisit un nombre uniformement dans [0,1]
+                for table_n in voisins(table, coeff*nombre_aleatoire): # Pour tous les voisins de la table s, on calcule sa trajectoire ainsi que son énergie
+                        trajectoire.compute(seq, table_n) 
+                        eval_n = evaluation(trajectoire)
+                        if(eval_n < eval or nombre_aleatoire < math.exp((eval-eval_n)/temperature)):
+                                table = table_n
+                                eval = eval_n
+                temperature = 0.95*temperature # On change la temperature
                 tpsi = time.process_time()
-                temps = tpsi-tps_init #On actualise le temps    
+                temps = tpsi-tps_init # On actualise le temps
+                coeff = 0.95*coeff    
         print(temperature)
-        trajectoire = trajectoire.compute(seq,s)
-        print(s.getTable)
+        trajectoire = trajectoire.compute(seq,table)
+        print(table.getTable())
+
+
 

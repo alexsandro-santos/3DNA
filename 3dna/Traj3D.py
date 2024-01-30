@@ -29,7 +29,7 @@ class Traj3D:
         # Matrice cumulant l'ensemble des transformations géométriques engendrées par la séquence d'ADN
         total_matrix = np.eye(4)  # Identity matrix
 
-        # On enregistre la position du premier nucléotide
+        # On enregistre la position du premier nucléotide 
         self.__Traj3D = [np.array([0.0, 0.0, 0.0, 1.0])]
 
         matrices_Rz = {}
@@ -91,3 +91,4 @@ class Traj3D:
 
     def write(self, filename: str):
         self.fig.savefig(filename)
+        

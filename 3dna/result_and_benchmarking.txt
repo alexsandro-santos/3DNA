@@ -1,0 +1,109 @@
+Document ayant pour but de recenser les tests faits :
+
+--------- Recuit simulé --------- 
+
+1. Modification de la table : +- chaque paramètre pondéré par p*ecart_type
+
+Benchmark réalisé sur la chaîne de donnée de taille 8k
+On constate que en moyenne l'écart entre 2 dinucléotides vaut 3.37. On veut donc chercher à être proche de cette valeur pour la distance entre le dernier et le premier 
+
+-----------------
+
+temps = 20 sec
+p = 1 
+température : T' = 0.99*T  et Tinit = 1 
+
+Result : 
+
+température finale : 0.91 (arret à cause du temps)
+Distance : 23.13 
+Table de rotation obtenue : {'AA': [35.62, 7.2, -154, 0.06, 0.6, 0], 'AC': [34.4, 39.4, 143, 1.3, 5, 0], 'AG': [27.7, 8.4, 2, 1.5, 3, 0], 'AT': [32.6, 2.6, 0, 1.1, 2, 0], 'CA': [34.5, 3.5, -64, 0.9, 34, 0], 'CC': [33.81, 2.1, -57, 0.07, 2.1, 0], 'CG': [29.8, 6.7, 0, 1.1, 1.5, 0], 'CT': [27.7, 8.4, -2, 1.5, 3, 0], 'GA': [36.9, 42.9, 120, 0.9, 6, 0], 'GC': [38.8, 5, 180, 1.2, 1.275, 0], 'GG': [33.81, 2.1, 57, 0.07, 2.1, 0], 'GT': [34.4, 39.4, -143, 1.3, 5, 0], 'TA': [36, 2.9, 0, 1.1, 2, 0], 'TC': [36.9, 42.9, -120, 0.9, 6, 0], 'TG': [34.5, 3.5, 64, 0.9, 34, 0], 'TT': [35.62, 7.2, 154, 0.06, 0.6, 0]}
+On constate que la table de rotation ne bouge pas beaucoup de celle originelle, est-ce normal ? 
+
+-----------------
+
+temps = 200 sec
+p = 1 
+température : T' = 0.99*T  et Tinit = 1
+
+Result : 
+
+température finale : 0.53 (arret à cause du temps) 
+Distance : 23.13
+On a la même table de rotation : on est pris dans le même minimum local, essayons d'augmenter la température pour en sortir
+----------------
+
+temps = 20 sec
+p = 1 
+température : T' = 0.95*T  et Tinit = 100
+
+Result : 
+température finale : 63.02 (arret à cause du temps) 
+Distance : 39.9
+La table n'a toujours pas trop changé
+
+---------------- 
+
+J'ai changé la facon de modifier les coefficients de la table : je modifie avec +- température*ecart type ainsi je "converge" mieux et je ne fait pas des +- écarts-type à chaque fois
+
+temps = 200 sec
+p = température
+température : T' = 0.97*T  et Tinit = 1
+
+Result : température finale : 0.1 (arret à cause de la température)
+Distance : 6.01 
+Table : {'AA': [35.70620111729458, 7.023801610339648, -154, 0.06, 0.6, 0], 'AC': [34.4, 39.1045, 143, 1.3, 5, 0], 'AG': [27.7, 8.4, 2, 1.5, 3, 0], 'AT': [32.567, 2.6, 0, 1.1, 2, 0], 'CA': [34.5, 3.5, -64, 0.9, 34, 0], 'CC': [33.73907132248102, 2.1, -57, 0.07, 2.1, 0], 'CG': [29.8, 6.7, 0, 1.1, 1.5, 0], 'CT': [27.7, 8.4, -2, 1.5, 3, 0], 'GA': [36.9, 42.9, 120, 0.9, 6, 0], 'GC': [38.22265737536943, 5, 180, 1.2, 1.275, 0], 'GG': [33.73907132248102, 2.1, 57, 0.07, 2.1, 0], 'GT': [34.4, 39.1045, -143, 1.3, 5, 0], 'TA': [36, 2.431818189928141, 0, 1.1, 2, 0], 'TC': [36.9, 42.9, -120, 0.9, 6, 0], 'TG': [34.5, 3.5, 64, 0.9, 34, 0], 'TT': [35.70620111729458, 7.023801610339648, 154, 0.06, 0.6, 0]}
+
+C'est quand même étrange on est vraiment proche de la table initiale.
+Je vais essayer de prendre des paramètres beaucoup plus variables (possibilité de beaucoup bouger)
+
+----------------
+
+Je modifie les coefficients de la table en faisant +- température
+
+temps = 200 sec
+p = température
+température : T' = 0.95*T et Tinit = 10
+
+Result : température finale : 0.29
+Distance : 8.22
+Table : 'AA': [37.44893617890828, 7.2, -154, 0.06, 0.6, 0], 'AC': [34.4, 1.1, 143, 1.3, 5, 0], 'AG': [27.7, 54.775000000000006, 2, 1.5, 3, 0], 'AT': [31.5, 2.6, 0, 1.1, 2, 0], 'CA': [34.5, 144.50140529106108, -64, 0.9, 34, 0], 'CC': [34.69427053317465, 2.1, -57, 0.07, 2.1, 0], 'CG': [29.8, 6.7, 0, 1.1, 1.5, 0], 'CT': [27.7, 54.775000000000006, -2, 1.5, 3, 0], 'GA': [36.9, 5.3, 120, 0.9, 6, 0], 'GC': [40, 12.641660123813399, 180, 1.2, 1.275, 0], 'GG': [34.69427053317465, 2.1, 57, 0.07, 2.1, 0], 'GT': [34.4, 1.1, -143, 1.3, 5, 0], 'TA': [36, -19.1, 0, 1.1, 2, 0], 'TC': [36.9, 5.3, -120, 0.9, 6, 0], 'TG': [34.5, 144.50140529106108, 64, 0.9, 34, 0], 'TT': [37.44893617890828, 7.2, 154, 0.06, 0.6, 0]}
+
+On remarque qu'on a quelques points ou on bouge vraiment beaucoup (notemment sur le wedge)
+
+---------------
+
+Simulation 
+
+Temps = 1000 sec 
+p = coeff*nombre_aléatoire (entre 0 et 1)
+Température : T' = 0.99*T et Tinit = 100
+coeff initial = 1 et C(i+i) = 0.99*C(i)
+
+Result : Température finale : 1.86
+Distance : 4.54
+Table : {'AA': [36.00901783306151, 6.6620743568444825, -154, 0.06, 0.6, 0], 'AC': [35.45044779839107, 1.1, 143, 1.3, 5, 0], 'AG': [27.7, 8.4, 2, 1.5, 3, 0], 'AT': [28.883390904440475, 1.25967760442173, 0, 1.1, 2, 0], 'CA': [34.63768880317339, 3.5, -64, 0.9, 34, 0], 'CC': [33.73329157061367, -3.4025678362797844, -57, 0.07, 2.1, 0], 'CG': [29.8, 6.7, 0, 1.1, 1.5, 0], 'CT': [27.7, 8.4, -2, 1.5, 3, 0], 'GA': [36.9, 40.66782308516605, 120, 0.9, 6, 0], 'GC': [37.89031671586659, 6.655410695708084, 180, 1.2, 1.275, 0], 'GG': [33.73329157061367, -3.4025678362797844, 57, 0.07, 2.1, 0], 'GT': [35.45044779839107, 1.1, -143, 1.3, 5, 0], 'TA': [37.98002759485639, 0.491802328175322, 0, 1.1, 2, 0], 'TC': [36.9, 40.66782308516605, -120, 0.9, 6, 0], 'TG': [34.63768880317339, 3.5, 64, 0.9, 34, 0], 'TT': [36.00901783306151, 6.6620743568444825, 154, 0.06, 0.6, 0]}
+
+
+---------------
+
+Temps = 1000 sec 
+p = coeff*nombre_aléatoire (entre 0 et 1)
+Température : T' = 0.98*T et Tinit = 100
+coeff initial = 1 et C(i+i) = 0.99*C(i)
+
+Result : Température finale : 0.46
+Distance : 1.19
+Table : {'AA': [35.81552336600462, 6.19812281750848, -154, 0.06, 0.6, 0], 'AC': [34.4, 1.1, 143, 1.3, 5, 0], 'AG': [27.7, 7.819423426218836, 2, 1.5, 3, 0], 'AT': [31.5, 2.0974940302204224, 0, 1.1, 2, 0], 'CA': [34.5, 3.5, -64, 0.9, 34, 0], 'CC': [33.91587038464134, -0.6994819020209951, -57, 0.07, 2.1, 0], 'CG': [29.8, 6.7, 0, 1.1, 1.5, 0], 'CT': [27.7, 7.819423426218836, -2, 1.5, 3, 0], 'GA': [36.9, 38.87747414126618, 120, 0.9, 6, 0], 'GC': [39.70734668471414, 0.09990366227459997, 180, 1.2, 1.275, 0], 'GG': [33.91587038464134, -0.6994819020209951, 57, 0.07, 2.1, 0], 'GT': [34.4, 1.1, -143, 1.3, 5, 0], 'TA': [36.87766261188298, 0.41135291684360203, 0, 1.1, 2, 0], 'TC': [36.9, 38.87747414126618, -120, 0.9, 6, 0], 'TG': [34.5, 3.5, 64, 0.9, 34, 0], 'TT': [35.81552336600462, 6.19812281750848, 154, 0.06, 0.6, 0]}
+
+--------------
+
+Temps = 1000 sec
+p = coeff*nombre_aléatoire (entre 0 et 1)
+Température : T' = 0.95*T et Tinit = 100
+coeff initial = 1 et C(i+i) = 0.99*C(i)
+
+Result : Arret à cause de la température (0.09)
+Distance : 3.57
+Table : {'AA': [35.71844531944362, 7.2, -154, 0.06, 0.6, 0], 'AC': [0.20647751243696078, 1.1, 143, 1.3, 5, 0], 'AG': [27.7, 8.4, 2, 1.5, 3, 0], 'AT': [31.5, 1.7927351704539343, 0, 1.1, 2, 0], 'CA': [34.5, 52.739014663297965, -64, 0.9, 34, 0], 'CC': [34.00449668625695, 1.377565522248767, -57, 0.07, 2.1, 0], 'CG': [29.8, 6.7, 0, 1.1, 1.5, 0], 'CT': [27.7, 8.4, -2, 1.5, 3, 0], 'GA': [36.9, 39.88289557686061, 120, 0.9, 6, 0], 'GC': [40, 2.1798128493823574, 180, 1.2, 1.275, 0], 'GG': [34.00449668625695, 1.377565522248767, 57, 0.07, 2.1, 0], 'GT': [0.20647751243696078, 1.1, -143, 1.3, 5, 0], 'TA': [36, -4.615584298065193, 0, 1.1, 2, 0], 'TC': [36.9, 39.88289557686061, -120, 0.9, 6, 0], 'TG': [34.5, 52.739014663297965, 64, 0.9, 34, 0], 'TT': [35.71844531944362, 7.2, 154, 0.06, 0.6, 0]}
+
