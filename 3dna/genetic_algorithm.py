@@ -21,6 +21,16 @@ class GeneticAlgorithm:
     def _populate(self):
         self.population += [uniform_mutation(self.population) for _ in range(self.__population_size)]
         self.population.append(self.og_table)
+    
+    def evaluate(self,seq):
+        self.score=[]
+        for table in self.population:
+            traj = Traj3D()
+            traj.compute(seq,table)
+            score+=[traj.getLength()]
+
+
+##############################################################################################################
 
 def gaussian_mutation(table):
     new_table = deepcopy(table)
