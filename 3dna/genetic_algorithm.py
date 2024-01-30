@@ -1,4 +1,4 @@
-from random import randint, gauss, uniform, choice
+from random import randint, gauss, uniform, choice,sample
 from copy import deepcopy
 from .RotTable import RotTable
 from .Traj3D import Traj3D
@@ -22,10 +22,9 @@ class GeneticAlgorithm:
         self.population.append(self.og_table)
         self.population.extend([uniform_randomize(self.og_table) for _ in range(self.__population_size - 1)])
     
-    def evaluate(self,seq):
+    def evaluate(self,seq,traj):
         self.scores = []
         for table in self.population:
-            traj = Traj3D()
             traj.compute(seq,table)
             self.scores += [traj.getLength()]
 
@@ -136,3 +135,42 @@ def simple_crossover(parent1: RotTable, parent2: RotTable):
             child2.setWedge(non_symmetric_elements[i], parent1.getWedge(non_symmetric_elements[i]))
         
         return child1, child2
+
+def simple_crossover(parent1: RotTable, parent2: RotTable):
+        cross_point = randint(1,9)
+        non_symmetric_elements = ["AA","AC","AG","CA","CC","GA","AT","GC","CG","TA"]
+        child1 = deepcopy(parent1)
+        child2 = deepcopy(parent2)
+
+        for i in range(cross_point):
+            child1.setTwist(non_symmetric_elements[i], parent2.getTwist(non_symmetric_elements[i]))
+            child1.setWedge(non_symmetric_elements[i], parent2.getWedge(non_symmetric_elements[i]))
+            
+            child2.setTwist(non_symmetric_elements[i], parent1.getTwist(non_symmetric_elements[i]))
+            child2.setWedge(non_symmetric_elements[i], parent1.getWedge(non_symmetric_elements[i]))
+        
+        return child1, child2
+
+def selection(genetic,seq,traj):
+
+    populations = genetic.population
+    score = genetic.evaluate(seq,traj)
+    populationscore = [(populations[i],score[i]) for i in range(len(genetic.population))]
+    populationbis = []
+    while(len(populationscore)>1):
+        deux_elements_aleatoires = sample(populationscore, 2)
+        for element in deux_elements_aleatoires:
+            populationscore.remove(element)
+        t1,s1 = deux_elements_aleatoires[0]
+        t2,s2 = deux_elements_aleatoires[1]
+        if (s1>s2):
+            populationbis.append(t2)
+            #print(f"les élements aléatoires : {deux_elements_aleatoires}, le selectionné : {(t2,s2)}")
+        else:
+            populationbis.append(t1)
+            #print(f"les élements aléatoires : {deux_elements_aleatoires}, le selectionné : {(t1,s1)}")
+    for element in populationscore: #Maybe change this, if we have an odd number of population,we keep the one who didn't fight 
+        a,_ = element
+        populationbis.append(a)
+    genetic.population = populationbis
+    genetic.population_size = len(populationbis)

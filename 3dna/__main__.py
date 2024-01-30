@@ -1,7 +1,6 @@
 from .RotTable import RotTable
 from .Traj3D import Traj3D
-from .genetic_algorithm import GeneticAlgorithm
-
+from .genetic_algorithm import *
 import argparse
 parser = argparse.ArgumentParser()
 parser.add_argument("filename", help="input filename of DNA sequence")
@@ -20,10 +19,11 @@ def main():
     traj.compute(seq, rot_table)
 
     # print(traj.getTraj())
-
+    a = GeneticAlgorithm(11,rot_table)
+    selection(a,seq,traj)
+    print(a.population_size)
     traj.draw()
     traj.write(args.filename+".png")
-
 
 if __name__ == "__main__" :
     main()
