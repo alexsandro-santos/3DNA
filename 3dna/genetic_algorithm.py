@@ -23,11 +23,11 @@ class GeneticAlgorithm:
         self.population.append(self.og_table)
     
     def evaluate(self,seq):
-        self.score=[]
+        self.scores=[]
         for table in self.population:
             traj = Traj3D()
             traj.compute(seq,table)
-            score+=[traj.getLength()]
+            self.scores+=[traj.getLength()]
 
 
 ##############################################################################################################
