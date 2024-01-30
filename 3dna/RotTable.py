@@ -42,9 +42,9 @@ class RotTable:
         return self.rot_table
     
     def getNonSymmetric(self) -> dict:
-        NonSymmetric_elements=["AA","AC","AG","CA","CC","GA","AT","GC","CG","TA"]
-        table=self.getTable()
-        return {elem:table[elem]for elem in NonSymmetric_elements}
+        NonSymmetric_elements = ["AA","AC","AG","CA","CC","GA","AT","GC","CG","TA"]
+        table = self.getTable()
+        return {elem:table[elem] for elem in NonSymmetric_elements}
 
 
     ###################
