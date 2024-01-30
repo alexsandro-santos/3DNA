@@ -39,3 +39,8 @@ def uniform_mutation(table):
             ub=2*dinucleotide[i+3]
             new_table[dinucleotide][i] += uniform(lb,ub)
     return new_table
+
+def read_file(path):
+    lineList = [line.rstrip('\n') for line in open(path)]
+    seq = ''.join(lineList[1:])
+    return seq
