@@ -19,8 +19,8 @@ class GeneticAlgorithm:
         self._population = new_population
 
     def _populate(self):
-        self.population += [uniform_randomize(self.population) for _ in range(self.__population_size)]
         self.population.append(self.og_table)
+        self.population.extend([uniform_randomize(self.og_table) for _ in range(self.__population_size - 1)])
     
     def evaluate(self,seq):
         self.scores = []
