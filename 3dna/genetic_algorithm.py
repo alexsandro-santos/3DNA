@@ -1,4 +1,4 @@
-from random import getrandbits,gauss,uniform
+from random import getrandbits,gauss,uniform,choices
 from copy import deepcopy
 from .RotTable import RotTable
 from .Traj3D import Traj3D
@@ -29,6 +29,14 @@ class GeneticAlgorithm:
             traj.compute(seq,table)
             self.scores+=[traj.getLength()]
 
+    def crossover(self):
+        new_population = []
+        for i in range(self.__population_size):
+            parent1 = choices(self.population,k=2)[0]#consider using weighted choices
+            parent2 = choices(self.population,k=2)[0]
+            child1, child2 = self._crossover(parent1,parent2)
+            new_population.append(child1,child2)
+        
 
 ##############################################################################################################
 
