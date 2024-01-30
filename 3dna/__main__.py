@@ -8,16 +8,16 @@ parser.parse_args()
 args = parser.parse_args()
 
 def main():
-
+    #Initialisation de la table, et de la trajectoire
     rot_table = RotTable()
     traj = Traj3D()
-    
+    #print(voisins(rot_table,1))
     # Read file
     lineList = [line.rstrip('\n') for line in open(args.filename)]
     # Formatting
     seq = ''.join(lineList[1:])
-    
-    traj.compute(seq, rot_table)
+    traj.compute(seq,rot_table)
+    #traj = recuit_simule(traj,rot_table,seq)
     print(evaluation(traj))
     traj.draw()
     traj.write(args.filename+".png")

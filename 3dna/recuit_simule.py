@@ -4,14 +4,23 @@ import time
 from random import *
 from copy import deepcopy
 
-def evaluation(traj):
-        vec1 = traj.getTraj()[0]
-        vec2 = traj.getTraj()[-1]
-        diff = vec1 - vec2
-        return diff.length
-        # xyz = np.array(Traj3D.getTraj(traj))
-        # x, y, z = xyz[:,0], xyz[:,1], xyz[:,2]
-        # return np.sqrt((x[0]-x[-1])**2 + (y[0]-y[-1])**2 + (z[0]-z[-1])**2)
+def evaluation(traj): #On calcule la distance euclidienne entre le premier point et le dernier point, on cherchera donc à minimiser cette valeur 
+        xyz = np.array(traj.getTraj())
+        x, y, z = xyz[:,0], xyz[:,1], xyz[:,2]
+        return np.sqrt((x[0]-x[-1])**2 + (y[0]-y[-1])**2 + (z[0]-z[-1])**2)
+
+def test_evaluation():
+    rot_table = RotTable()
+    traj = Traj3D()
+    
+    # Read file
+    lineList = [line.rstrip('\n') for line in open("data/plasmid_8k.fasta")]
+    # Formatting
+    seq = ''.join(lineList[1:])
+    
+    traj.compute(seq, rot_table)
+    print(evaluation(traj))
+    assert(evaluation(traj)==2)
 
 def exponentielle(x, y):
         return math.exp(x / y)
@@ -74,10 +83,7 @@ def voisins(table:RotTable, p: float):          # On a une table et on veut renv
                 new_moins_Wedge.setWedge(couple, table.getWedge(couple) - p*table_dic[couple][4]) 
                 new_table_list.append(new_moins_Wedge)
         return new_table_list
-
-
-        
-        
+               
 def recuit_simule(seq):
         tps_init = time.clock()
         temps = 0
@@ -85,15 +91,18 @@ def recuit_simule(seq):
         e = evaluation(s,seq)
         temperature = 1 
 
-        while(temps < 100 and temperature > 0.01):
-                nombre_aleatoire = uniform()
-                for sn in voisin(s):
-                        en = evaluation(s,seq)
+        while(temps < 100 and temperature > 0.1):
+                nombre_aleatoire = uniform() #On choisi un nombre uniformement dans [0,1]
+                for sn in voisins(s): #Pour tous les voisins de la table s, on calcule sa trajectoire ainsi que son énergie
+                        trajectoire.compute(seq,sn) 
+                        en = evaluation(trajectoire)
                         if(en<e or nombre_aleatoire < exponentielle(en-e,temperature)):
                                 s = sn
                                 e = en
-                temperature = 0.99 * temperature 
-                tpsi = time.clock()
-                temps = tpsi-tps_init     
+                temperature = 0.99 * temperature #On change la temperature
+                tpsi = time.clock() 
+                temps = tpsi-tps_init #On actualise le temps    
         print(temperature)
-        return s
+        trajectoire = trajectoire.compute(s)
+        return trajectoire
+
