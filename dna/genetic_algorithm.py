@@ -18,18 +18,22 @@ class GeneticAlgorithm:
         self.evaluate()
 
     @property
+    # access to our population (list of rot_table)
     def population(self):
         return self._population
     
     @population.setter
+    # allows modifying the population
     def population(self, new_population):
         self._population = new_population
 
     def _populate(self):
+    # initialize a population with a uniform distribution around the og_table
         self.population.append(self.og_table)
         self.population.extend([uniform_randomize(self.og_table) for _ in range(self.__population_size - 1)])
     
     def evaluate(self): #passed the self.score to init
+    # evaluation fonction : return a list where scores[i] is the distance between the last and first point using the rot_table i
         new_scores = []
         for table in self.population:
             self.traj.compute(self.seq,table)
@@ -37,16 +41,20 @@ class GeneticAlgorithm:
         self.scores = new_scores
 
     def crossover(self):
+    # shuffle the population : takes 2 individuals to create 2 children => doubling the total population
         new_population = []
         weights=[]
+        max_score=max(self.scores)
         for score in self.scores:
-            weights.append(1/score)
+            weights.append(max_score-score)
         for _ in range(0, self.__population_size, 2):
-            parent1,parent2 =choices(self.population, k=2, weights=weights)
+            parent1,parent2 = choices(self.population, k=2, weights=weights)
+            while (parent1 == parent2):
+                parent1,parent2 = choices(self.population, k=2, weights=weights)
             child1, child2 = double_crossover(parent1, parent2)
             new_population.extend([child1,child2])
         
-        self.population = new_population
+        self.population += new_population
         self.__population_size = len(new_population)
         # print(f"new population size : {self.__population_size}")
 
@@ -64,6 +72,7 @@ class GeneticAlgorithm:
         self.population = new_population
     
     def selection(self):
+    #
         populations = self.population
         self.evaluate()
         score = self.scores
@@ -93,10 +102,14 @@ class GeneticAlgorithm:
         self.scores = new_score
     
     def run(self):
-       while self.__population_size > 2:
+       i = 0
+       while i<100:
+        #    print(f"population size : {self.__population_size}")
+        #    print(f"best score : {min(self.scores)}")
            self.selection()
            self.crossover()
            self.mutation()
+           i+=1
 
 
     def get_results(self)->(RotTable, float): #returns the best table and its score
@@ -205,7 +218,7 @@ def simple_crossover(parent1: RotTable, parent2: RotTable):
 
 def double_crossover(parent1: RotTable, parent2: RotTable):
     cross_point1 = randint(1,9)
-    cross_point2 = randint(cross_point1,9)
+    cross_point2 = randint(1,9)
     non_symmetric_elements = ["AA","AC","AG","CA","CC","GA","AT","GC","CG","TA"]
     child1 = deepcopy(parent1)
     child2 = deepcopy(parent2)
@@ -238,9 +251,9 @@ def mutate(table: RotTable) -> RotTable:
 
     if randint(0,1):
         twist = mutated_table.getTwist(dinucleotide)
-        mutated_table.setTwist(dinucleotide, gauss(twist, non_symmetric_table[dinucleotide][3]/10))
+        mutated_table.setTwist(dinucleotide, gauss(twist, non_symmetric_table[dinucleotide][3]))
     else:
         wedge = mutated_table.getWedge(dinucleotide)
-        mutated_table.setWedge(dinucleotide, gauss(wedge, non_symmetric_table[dinucleotide][4]/10))
+        mutated_table.setWedge(dinucleotide, gauss(wedge, non_symmetric_table[dinucleotide][4]))
 
     return symmetrizeTable(mutated_table)
