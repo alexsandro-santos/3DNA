@@ -63,6 +63,7 @@ class GeneticAlgorithm:
         score = self.scores
         population_score = [(populations[i],score[i]) for i in range(len(self.population))]
         new_population = []
+        new_score = []
         while(len(population_score)>1):
             two_random_elements = sample(population_score, 2)
             for element in two_random_elements:
@@ -71,16 +72,19 @@ class GeneticAlgorithm:
             t2,s2 = two_random_elements[1]
             if (s1>s2):
                 new_population.append(t2)
+                new_score.append(s2)
                 #print(f"les élements aléatoires : {deux_elements_aleatoires}, le selectionné : {(t2,s2)}")
             else:
                 new_population.append(t1)
+                new_score.append(s1)
                 #print(f"les élements aléatoires : {deux_elements_aleatoires}, le selectionné : {(t1,s1)}")
         for element in population_score: #Maybe change this, if we have an odd number of population,we keep the one who didn't fight 
-            a,_ = element
+            a,s = element
             new_population.append(a)
+            new_score.append(s)
         self.population = new_population
         self.population_size = len(new_population)
-    
+        self.score = new_score
     def run(self,seq,traj):
        while self.__population_size > 2:
            self.selection(seq,traj)
