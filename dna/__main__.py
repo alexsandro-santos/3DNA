@@ -24,9 +24,9 @@ def main():
     # print(a.population_size)
     # traj.draw()
     # traj.write(args.filename+".png")
-    algo = GeneticAlgorithm(1024, rot_table, 0)
-    algo.run(seq,traj)
-    table, score=algo.get_results(seq,traj)
+    algo = GeneticAlgorithm(1024, rot_table, 0.3, seq, traj)
+    algo.run()
+    table, score=algo.get_results()
     print(f"Best score: {score}")
     print(f"Best table: {table.getTable()}")
 
