@@ -1,4 +1,5 @@
 from random import randint, gauss, uniform, choice,choices, sample, random
+import json
 from copy import deepcopy
 from .RotTable import RotTable
 from .Traj3D import Traj3D
@@ -92,8 +93,6 @@ class GeneticAlgorithm:
         self.population += final_population
         self.scores += final_scores
         
-        
-    
     def run(self):
        i = 0
        while i<100:
@@ -108,7 +107,10 @@ class GeneticAlgorithm:
         best_score = min(self.scores)
         min_index = self.scores.index(best_score)
         return self.population[min_index], best_score
-
+    
+    def write_results(self, filename):
+        table, score=self.get_results()
+        table.toJSON(filename)
 ##############################################################################################################
 
 def symmetrizeTable(incomplete_table: RotTable):
