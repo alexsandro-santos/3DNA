@@ -7,6 +7,7 @@ class GeneticAlgorithm:
     def __init__(self, population_size: int, og_table: RotTable, mutation_prob: float) -> None:
         self.__population_size = population_size
         self._population = []
+        self.scores = []
         self.og_table = og_table
         self.__mutation_prob = mutation_prob
         self._populate()
@@ -23,22 +24,26 @@ class GeneticAlgorithm:
         self.population.append(self.og_table)
         self.population.extend([uniform_randomize(self.og_table) for _ in range(self.__population_size - 1)])
     
-    def evaluate(self,seq,traj):
-        self.scores = []
+    def evaluate(self,seq,traj): #passed the self.score to init
+        new_scores = []
         for table in self.population:
             traj.compute(seq,table)
-            self.scores += [traj.getLength()]
+            new_scores += [traj.getLength()]
+        self.scores = new_scores
 
     def crossover(self):
         new_population = []
-        for i in range(0, self.__population_size, 2):
+        for i in range(0, self.__population_size, 2): #fix index out of range
             parent1 = self.population[i]
             parent2 = self.population[i+1]
+            # print(f"parent1 : {i}")
+            # print(f"parent2 : {i+1}")
             child1, child2 = simple_crossover(parent1, parent2)
             new_population.extend([child1,child2])
         
         self.population = new_population
         self.__population_size = len(new_population)
+        # print(f"new population size : {self.__population_size}")
 
     def mutation(self):
         new_population = []
@@ -53,9 +58,10 @@ class GeneticAlgorithm:
     
     def selection(self,seq,traj):
         populations = self.population
-        score = self.evaluate(seq,traj)
-        populationscore = [(populations[i],score[i]) for i in range(len(self.population))]
+        self.evaluate(seq,traj)
+        populationscore = [(populations[i],self.scores[i]) for i in range(len(self.population))] #fixed the index of scores
         populationbis = []
+        scorebis=[]
         while(len(populationscore)>1):
             deux_elements_aleatoires = sample(populationscore, 2)
             for element in deux_elements_aleatoires:
@@ -71,14 +77,17 @@ class GeneticAlgorithm:
         for element in populationscore: #Maybe change this, if we have an odd number of population,we keep the one who didn't fight 
             a,_ = element
             populationbis.append(a)
+            scorebis.append(_) #updating the score list
         self.population = populationbis
-        self.__population_size = len(populationbis)
+        self.__population_size = len(self.population)
+        self.scores = scorebis
     
     def run(self,seq,traj):
-        for i in range(self.__population_size//2-1):
-            self.selection(seq,traj)
-            self.crossover()
-            self.mutation()
+       while self.__population_size > 2:
+           self.selection(seq,traj)
+           self.crossover()
+           self.mutation()
+
 
     def get_results(self, seq, traj)->(RotTable, float): #returns the best table and its score
         self.evaluate(seq,traj)
