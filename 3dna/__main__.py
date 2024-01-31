@@ -19,7 +19,7 @@ def main():
     traj.compute(seq, rot_table)
 
     # print(traj.getTraj())
-    a = GeneticAlgorithm(11,rot_table)
+    a = GeneticAlgorithm(11,rot_table,0.3)
     a.selection(seq,traj)
     print(a.population_size)
     traj.draw()
