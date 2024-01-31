@@ -95,3 +95,18 @@ class Traj3D:
     def getLength(self) -> float:
         start,end= self.__Traj3D[0],self.__Traj3D[-1]
         return np.linalg.norm(end-start)
+    
+    def getAngle(self) -> float:
+        end, end_1, start = self.__Traj3D[-1], self.__Traj3D[-2], self.__Traj3D[0]
+        vecteur1 = [end_1[0]-end[0], end_1[1]-end[1], end_1[2]-end[2]]
+        vecteur2 = [start[0]-end[0], start[1]-end[1], start[2]-end[2]]
+        produit_scalaire = np.dot(vecteur1, vecteur2)
+        return produit_scalaire/(np.linalg.norm(vecteur1)*np.linalg.norm(vecteur2))
+        # On a calculé cos(theta) où theta est l'angle formé par l'avant dernier, le dernier et le premier point de la trajectoire.
+    
+    def getEval(self) -> float:
+        # On ajoute une condition : getAngle() < -1/2 singnifie que nous points sont "relativement alignés" 
+        if self.getAngle() < -(1/2):
+            return 10000
+        else:
+            return self.getLength()
