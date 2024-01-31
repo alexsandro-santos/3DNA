@@ -1,10 +1,10 @@
-from random import randint, gauss, uniform, choice,choices, sample, random
+from random import randint, gauss, uniform, choice,choices, sample, random, seed
 from copy import deepcopy
 from .RotTable import RotTable
 from .Traj3D import Traj3D
 
 class GeneticAlgorithm:
-    def __init__(self, population_size: int, og_table: RotTable, mutation_prob: float, seq: str, traj: Traj3D) -> None:
+    def __init__(self, population_size: int, og_table: RotTable, mutation_prob: float, seq: str, traj: Traj3D, seed = None) -> None:
         self.__population_size = population_size
         self._population = []
         self.scores = []
@@ -12,6 +12,7 @@ class GeneticAlgorithm:
         self.__mutation_prob = mutation_prob
         self.seq=seq
         self.traj=traj
+        self.seed=seed
         self.scores = []
         self._populate()
         self.evaluate()
@@ -34,7 +35,6 @@ class GeneticAlgorithm:
             self.traj.compute(self.seq,table)
             new_scores += [self.traj.getLength()]
         self.scores = new_scores
-        print(f"Best score {min(self.scores)}")
 
     def crossover(self):
         new_population = []
@@ -50,7 +50,9 @@ class GeneticAlgorithm:
         self.__population_size = len(new_population)
         # print(f"new population size : {self.__population_size}")
 
-    def mutation(self): #TODO: symmetrize
+    def mutation(self):
+        if self.seed is not None:
+            seed(self.seed)
         new_population = []
         for table in self.population:
             if random() <= self.__mutation_prob:
