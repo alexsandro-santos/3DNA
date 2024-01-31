@@ -12,7 +12,7 @@ class RotTable:
     def __init__(self, filename: str = None):
         if filename is None:
             filename = os_path.join(here, 'table.json')
-        self.rot_table = json.json_load(open(filename))
+        self.rot_table = json.load(open(filename))
 
     ###################
     # WRITING METHODS #
