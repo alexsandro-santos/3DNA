@@ -74,4 +74,4 @@ class RotTable:
     # TO JSON METHODS #
     def toJSON(self, filename: str):
         with open(filename, 'w') as outfile:
-            json.dump(self.getTable(), outfile)
+            json.dump(self.getTable(), outfile, indent=4)
