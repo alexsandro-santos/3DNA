@@ -20,7 +20,7 @@ def main():
     # Formatting
     seq = ''.join(lineList[1:])
     traj.compute(seq,rot_table)
-    # recuit_simule(seq,traj)
+    recuit_simule(seq,traj,1,60)
     print(traj.getLength())
     print(traj.getDerivatives())
     traj.draw()

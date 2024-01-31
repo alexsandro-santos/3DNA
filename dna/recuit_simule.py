@@ -70,30 +70,28 @@ def voisins(table:RotTable, p: float):
                
                
                
-def recuit_simule(seq,trajectoire):
-        tps_init = time.process_time()          # Permet de compter le temps passé 
+def recuit_simule(seq, trajectoire, temp_init, temps_max):
+        tps_init = time.process_time()          # Permet de calculer le temps passé 
         temps = 0
         table = RotTable()
-        eval = trajectoire.getEval()
-        temperature = 10
+        eval = trajectoire.getLength()
         coeff = 10
-        compteur = 0
-        while(temps < 100 and temperature > 0.1):
+        temperature = temp_init
+        while(temps < temps_max and temperature > 0.1):
                 nombre_aleatoire = uniform(0,1) # On choisit un nombre uniformement dans [0,1]
                 for table_n in voisins(table, coeff*nombre_aleatoire): # Pour tous les voisins de la table s, on calcule sa trajectoire ainsi que son énergie
                         trajectoire.compute(seq, table_n) 
-                        eval_n = trajectoire.getEval()
-                        if (eval_n < eval or nombre_aleatoire < math.exp((eval-eval_n)/temperature)):
-                                compteur += 1
+                        eval_n = trajectoire.getLength()
+                        if (eval_n < eval or nombre_aleatoire < math.exp((eval-eval_n)/temperature)):            
+                                # print("on s'est amélioré de", eval-eval_n)
                                 table = table_n
                                 eval = eval_n
-                temperature = 0.95*temperature # On change la temperature
+                temperature = 0.99*temperature # On change la temperature
                 temps = time.process_time()-tps_init # On actualise le temps
                 coeff = 0.90*coeff    
         print("temperature de fin", temperature)
         print("temps d'execution", temps) 
         print(coeff)
-        print("nombre de fois que la table a été modifiée", compteur)
         trajectoire = trajectoire.compute(seq,table)
         print(table.getTable())
 

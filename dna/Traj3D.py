@@ -31,7 +31,6 @@ class Traj3D:
 
         # On enregistre la position du premier nucléotide 
         self.__Traj3D = [np.array([0.0, 0.0, 0.0, 1.0])]
-
         matrices_Rz = {}
         matrices_Q = {}
         # On parcourt la sequence, nucléotide par nucléotide
@@ -95,7 +94,6 @@ class Traj3D:
     def getLength(self) -> float:
         start,end= self.__Traj3D[0],self.__Traj3D[-1]
         return np.linalg.norm(end-start)
-
     
     def getDerivatives(self) -> float:
         end, end_1, start = self.__Traj3D[-1], self.__Traj3D[-2], self.__Traj3D[0]
