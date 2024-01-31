@@ -20,7 +20,7 @@ def main():
 
     # print(traj.getTraj())
     a = GeneticAlgorithm(11,rot_table)
-    a.selection(a,seq,traj)
+    a.selection(seq,traj)
     print(a.population_size)
     traj.draw()
     traj.write(args.filename+".png")
