@@ -75,7 +75,7 @@ class GeneticAlgorithm:
         final_scores=[]
         max_score=max(self.scores)
         for score in self.scores:
-            weights.append(max_score-score)
+            weights.append(max_score-score+1)
         for _ in range(0, self.__population_size, 2):
             parent1,parent2 =choices(self.population, k=2, weights=weights)
             child1, child2 = double_crossover(parent1, parent2)
@@ -91,6 +91,7 @@ class GeneticAlgorithm:
                 final_scores.append(evaluate_table(table,self.seq,self.traj))
         self.population += final_population
         self.scores += final_scores
+        print(f"scores: {self.scores}")
         
         
     
@@ -205,10 +206,10 @@ def mutate(table: RotTable) -> RotTable:
 
     if randint(0,1):
         twist = mutated_table.getTwist(dinucleotide)
-        mutated_table.setTwist(dinucleotide, gauss(twist, non_symmetric_table[dinucleotide][3]))
+        mutated_table.setTwist(dinucleotide, gauss(twist, non_symmetric_table[dinucleotide][3]/10))
     else:
         wedge = mutated_table.getWedge(dinucleotide)
-        mutated_table.setWedge(dinucleotide, gauss(wedge, non_symmetric_table[dinucleotide][4]))
+        mutated_table.setWedge(dinucleotide, gauss(wedge, non_symmetric_table[dinucleotide][4]/10))
 
     return symmetrizeTable(mutated_table)
 

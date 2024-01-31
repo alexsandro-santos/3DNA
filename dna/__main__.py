@@ -1,6 +1,7 @@
 from .RotTable import RotTable
 from .Traj3D import Traj3D
-from .genetic_algorithm import *
+# from .genetic_algorithm import *
+from .opti_genetic_algo import *
 import argparse
 parser = argparse.ArgumentParser()
 parser.add_argument("filename", help="input filename of DNA sequence")
@@ -24,7 +25,7 @@ def main():
     # print(a.population_size)
     # traj.draw()
     # traj.write(args.filename+".png")
-    algo = GeneticAlgorithm(100, rot_table, 0.3, seq, traj)
+    algo = GeneticAlgorithm(40, rot_table, 0.3, seq, traj)
     algo.run()
     table, score=algo.get_results()
     print(f"Best score: {score}")
