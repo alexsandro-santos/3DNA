@@ -30,6 +30,12 @@ def main():
     table, score=algo.get_results()
     print(f"Best score: {score}")
     print(f"Best table: {table.getTable()}")
+    algo.write_results("./dna/results.json")
+
+    traj=Traj3D()
+    table=RotTable("./dna/results.json")
+    traj.compute(seq,table)
+    traj.draw()
 
 if __name__ == "__main__" :
     main()
