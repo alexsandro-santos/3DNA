@@ -26,6 +26,15 @@ class RotTable:
     def setDirection(self, dinucleotide: str, value: float):
         self.rot_table[dinucleotide][2] = value
 
+    def setSDTwist(self, dinucleotide: str, value: float):
+        self.rot_table[dinucleotide][3] = value
+
+    def setSDWedge(self, dinucleotide: str, value: float):
+        self.rot_table[dinucleotide][4] = value
+
+    def setSDDirection(self, dinucleotide: str, value: float):
+        self.rot_table[dinucleotide][5] = value
+
     ###################
     # READING METHODS #
     ###################
@@ -38,6 +47,15 @@ class RotTable:
     def getDirection(self, dinucleotide: str) -> float:
         return self.getTable()[dinucleotide][2]
     
+    def getSDTwist(self, dinucleotide: str) -> float:
+        return self.getTable()[dinucleotide][3]
+
+    def getSDWedge(self, dinucleotide: str) -> float:
+        return self.getTable()[dinucleotide][4]
+
+    def getSDDirection(self, dinucleotide: str) -> float:
+        return self.getTable()[dinucleotide][5]
+    
     def getTable(self) -> dict:
         return self.rot_table
     
@@ -48,5 +66,8 @@ class RotTable:
 
     def __eq__(self, object2) -> bool:
         return self.getTable() == object2.getTable()
+    
+    def __str__(self):
+        return str(self.getTable())
 
     ###################
