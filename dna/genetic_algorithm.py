@@ -34,19 +34,19 @@ class GeneticAlgorithm:
             self.traj.compute(self.seq,table)
             new_scores += [self.traj.getLength()]
         self.scores = new_scores
-        print(f"Best score {min(self.scores)}")
 
     def crossover(self):
         new_population = []
         weights=[]
+        max_score=max(self.scores)
         for score in self.scores:
-            weights.append(1/score)
+            weights.append(max_score-score)
         for _ in range(0, self.__population_size, 2):
             parent1,parent2 =choices(self.population, k=2, weights=weights)
             child1, child2 = double_crossover(parent1, parent2)
             new_population.extend([child1,child2])
         
-        self.population = new_population
+        self.population += new_population
         self.__population_size = len(new_population)
         # print(f"new population size : {self.__population_size}")
 
@@ -91,10 +91,14 @@ class GeneticAlgorithm:
         self.scores = new_score
     
     def run(self):
-       while self.__population_size > 2:
+       i = 0
+       while i<100:
+        #    print(f"population size : {self.__population_size}")
+        #    print(f"best score : {min(self.scores)}")
            self.selection()
            self.crossover()
            self.mutation()
+           i+=1
 
 
     def get_results(self)->(RotTable, float): #returns the best table and its score
@@ -203,7 +207,7 @@ def simple_crossover(parent1: RotTable, parent2: RotTable):
 
 def double_crossover(parent1: RotTable, parent2: RotTable):
     cross_point1 = randint(1,9)
-    cross_point2 = randint(cross_point1,9)
+    cross_point2 = randint(1,9)
     non_symmetric_elements = ["AA","AC","AG","CA","CC","GA","AT","GC","CG","TA"]
     child1 = deepcopy(parent1)
     child2 = deepcopy(parent2)
@@ -236,9 +240,9 @@ def mutate(table: RotTable) -> RotTable:
 
     if randint(0,1):
         twist = mutated_table.getTwist(dinucleotide)
-        mutated_table.setTwist(dinucleotide, gauss(twist, non_symmetric_table[dinucleotide][3]/10))
+        mutated_table.setTwist(dinucleotide, gauss(twist, non_symmetric_table[dinucleotide][3]))
     else:
         wedge = mutated_table.getWedge(dinucleotide)
-        mutated_table.setWedge(dinucleotide, gauss(wedge, non_symmetric_table[dinucleotide][4]/10))
+        mutated_table.setWedge(dinucleotide, gauss(wedge, non_symmetric_table[dinucleotide][4]))
 
     return symmetrizeTable(mutated_table)
