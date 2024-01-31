@@ -106,7 +106,7 @@ class Traj3D:
     
     def getEval(self) -> float:
         # On ajoute une condition : getAngle() < -1/2 singnifie que nous points sont "relativement alignés" 
-        if self.getAngle() > -0.90:
-            return 10000
-        else:
-            return self.getLength()
+        # if self.getAngle() > -0.90:
+        #     return 10000
+        # else:
+        return self.getLength()
