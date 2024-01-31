@@ -38,6 +38,7 @@ class GeneticAlgorithm:
             new_population.extend([child1,child2])
         
         self.population = new_population
+        self.population_size = len(new_population)
 
     def mutation(self):
         new_population = []
@@ -72,7 +73,18 @@ class GeneticAlgorithm:
             populationbis.append(a)
         self.population = populationbis
         self.population_size = len(populationbis)
+    
+    def run(self,seq,traj):
+        for i in range(self.population_size//2-1):
+            self.selection(seq,traj)
+            self.crossover()
+            self.mutation()
 
+    def get_results(self, seq, traj)->(RotTable, float): #returns the best table and its score
+        self.evaluate(seq,traj)
+        max_score = max(self.scores)
+        max_index = self.scores.index(max_score)
+        return self.population[max_index], max_score
 
 ##############################################################################################################
 
