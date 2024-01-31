@@ -46,5 +46,7 @@ class RotTable:
         table = self.getTable()
         return {elem:table[elem] for elem in NonSymmetric_elements}
 
+    def __eq__(self, object2) -> bool:
+        return self.getTable() == object2.getTable()
 
     ###################
