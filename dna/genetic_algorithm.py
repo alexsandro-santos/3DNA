@@ -17,18 +17,22 @@ class GeneticAlgorithm:
         self.evaluate()
 
     @property
+    # access to our population (list of rot_table)
     def population(self):
         return self._population
     
     @population.setter
+    # allows modifying the population
     def population(self, new_population):
         self._population = new_population
 
     def _populate(self):
+    # initialize a population with a uniform distribution around the og_table
         self.population.append(self.og_table)
         self.population.extend([uniform_randomize(self.og_table) for _ in range(self.__population_size - 1)])
     
     def evaluate(self): #passed the self.score to init
+    # evaluation fonction : return a list where scores[i] is the distance between the last and first point using the rot_table i
         new_scores = []
         for table in self.population:
             self.traj.compute(self.seq,table)
@@ -36,6 +40,7 @@ class GeneticAlgorithm:
         self.scores = new_scores
 
     def crossover(self):
+    # shuffle the population : takes 2 individuals to create 2 children => doubling the total population
         new_population = []
         weights=[]
         max_score=max(self.scores)
@@ -50,7 +55,8 @@ class GeneticAlgorithm:
         self.__population_size = len(new_population)
         # print(f"new population size : {self.__population_size}")
 
-    def mutation(self): #TODO: symmetrize
+    def mutation(self): 
+    # apply mutations with a low probability : allows us to not stuck in a local minimum 
         new_population = []
         for table in self.population:
             if random() <= self.__mutation_prob:
