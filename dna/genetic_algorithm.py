@@ -59,6 +59,7 @@ class GeneticAlgorithm:
         # print(f"new population size : {self.__population_size}")
 
     def mutation(self):
+        # apply mutations with a low probability : allows us to not stuck in a local minimum 
         if self.seed is not None:
             seed(self.seed)
         new_population = []
