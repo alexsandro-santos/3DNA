@@ -9,6 +9,7 @@ class GeneticAlgorithm:
         self._population = []
         self.og_table = og_table
         self.__mutation_prob = mutation_prob
+        self.scores = []
         self._populate()
 
     @property
@@ -28,6 +29,7 @@ class GeneticAlgorithm:
         for table in self.population:
             traj.compute(seq,table)
             self.scores += [traj.getLength()]
+        return self.scores
 
     def crossover(self):
         new_population = []
@@ -53,26 +55,27 @@ class GeneticAlgorithm:
     
     def selection(self,seq,traj):
         populations = self.population
-        score = self.evaluate(seq,traj)
-        populationscore = [(populations[i],score[i]) for i in range(len(self.population))]
-        populationbis = []
-        while(len(populationscore)>1):
-            deux_elements_aleatoires = sample(populationscore, 2)
-            for element in deux_elements_aleatoires:
-                populationscore.remove(element)
-            t1,s1 = deux_elements_aleatoires[0]
-            t2,s2 = deux_elements_aleatoires[1]
+        self.evaluate(seq,traj)
+        score = self.scores
+        population_score = [(populations[i],score[i]) for i in range(len(self.population))]
+        new_population = []
+        while(len(population_score)>1):
+            two_random_elements = sample(population_score, 2)
+            for element in two_random_elements:
+                population_score.remove(element)
+            t1,s1 = two_random_elements[0]
+            t2,s2 = two_random_elements[1]
             if (s1>s2):
-                populationbis.append(t2)
+                new_population.append(t2)
                 #print(f"les élements aléatoires : {deux_elements_aleatoires}, le selectionné : {(t2,s2)}")
             else:
-                populationbis.append(t1)
+                new_population.append(t1)
                 #print(f"les élements aléatoires : {deux_elements_aleatoires}, le selectionné : {(t1,s1)}")
-        for element in populationscore: #Maybe change this, if we have an odd number of population,we keep the one who didn't fight 
+        for element in population_score: #Maybe change this, if we have an odd number of population,we keep the one who didn't fight 
             a,_ = element
-            populationbis.append(a)
-        self.population = populationbis
-        self.population_size = len(populationbis)
+            new_population.append(a)
+        self.population = new_population
+        self.population_size = len(new_population)
     
     def run(self,seq,traj):
         for i in range(self.population_size//2-1):

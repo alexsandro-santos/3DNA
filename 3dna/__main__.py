@@ -19,8 +19,8 @@ def main():
     traj.compute(seq, rot_table)
 
     # print(traj.getTraj())
-    a = GeneticAlgorithm(11,rot_table)
-    a.selection(a,seq,traj)
+    a = GeneticAlgorithm(11,rot_table,0.1)
+    a.selection(seq,traj)
     print(a.population_size)
     traj.draw()
     traj.write(args.filename+".png")
