@@ -47,7 +47,9 @@ class GeneticAlgorithm:
         for score in self.scores:
             weights.append(max_score-score)
         for _ in range(0, self.__population_size, 2):
-            parent1,parent2 =choices(self.population, k=2, weights=weights)
+            parent1,parent2 = choices(self.population, k=2, weights=weights)
+            while (parent1 == parent2):
+                parent1,parent2 = choices(self.population, k=2, weights=weights)
             child1, child2 = double_crossover(parent1, parent2)
             new_population.extend([child1,child2])
         
@@ -68,6 +70,7 @@ class GeneticAlgorithm:
         self.population = new_population
     
     def selection(self):
+    #
         populations = self.population
         self.evaluate()
         score = self.scores
