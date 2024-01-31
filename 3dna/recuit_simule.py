@@ -71,14 +71,14 @@ def voisins(table:RotTable, p: float):
                
                
 def recuit_simule(seq,trajectoire):
-        tps_init = time.process_time()
+        tps_init = time.process_time()          # Permet de compter le temps passé 
         temps = 0
         table = RotTable()
         eval = trajectoire.getEval()
         temperature = 10
         coeff = 10
         compteur = 0
-        while(temps < 200 and temperature > 0.1):
+        while(temps < 100 and temperature > 0.1):
                 nombre_aleatoire = uniform(0,1) # On choisit un nombre uniformement dans [0,1]
                 for table_n in voisins(table, coeff*nombre_aleatoire): # Pour tous les voisins de la table s, on calcule sa trajectoire ainsi que son énergie
                         trajectoire.compute(seq, table_n) 

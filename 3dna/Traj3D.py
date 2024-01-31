@@ -115,4 +115,4 @@ class Traj3D:
         # Avec quelques test, cette pondération donne de bons résultats
         return 2*self.getDerivatives() + self.getLength()
         
-        
+
