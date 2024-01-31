@@ -24,17 +24,6 @@ class TestGeneticAlgorithm(unittest.TestCase):
             self.assertIsNotNone(table)
             for row in table.getTable().values():
                 self.assertIsNotNone(row)
-
-# class TestGeneticAlgorithmFuncs(unittest.Test):
-#     def test_symmetrize_table(self):
-#         rot_table = RotTable()
-#         non_symmetric_table = rot_table.getNonSymmetric()
-#         for i, dinucleotide in enumerate(non_symmetric_table):
-#             rot_table.setTwist(dinucleotide,i)
-#             rot_table.setWedge(dinucleotide,i)
-#             rot_table.setDirection(dinucleotide,i)
-        
-#         rot_table = symmetrizeTable(rot_table)
                 
     def test_evaluate(self): 
         rot_table = RotTable()
@@ -71,6 +60,19 @@ class TestGeneticAlgorithm(unittest.TestCase):
         table,score = a.get_results(seq,traj)
         assert(table == rot_table2)
 
+class TestGeneticAlgorithmFuncs(unittest.TestCase):
+    def test_symmetrize_table(self):
+        rot_table = RotTable()
+        non_symmetric_table = rot_table.getNonSymmetric()
+        for i, dinucleotide in enumerate(non_symmetric_table):
+            rot_table.setTwist(dinucleotide,i)
+            rot_table.setWedge(dinucleotide,i)
+            rot_table.setDirection(dinucleotide,i)
+        
+        rot_table = symmetrizeTable(rot_table)
+        rot_table2 = RotTable('tests/testtable.json')
+        
+        self.assertEqual(rot_table,rot_table2)
 
 if __name__ == '__main__':
     unittest.main()
