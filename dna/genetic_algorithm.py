@@ -107,6 +107,7 @@ def symmetrizeTable(incomplete_table: RotTable):
     for base_pair in symmetry:
         table.setTwist(symmetry[base_pair], table.getTwist(base_pair))
         table.setWedge(symmetry[base_pair], table.getWedge(base_pair))
+        table.setDirection(symmetry[base_pair], -table.getDirection(base_pair))
     
     return table
 
