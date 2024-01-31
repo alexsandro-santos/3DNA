@@ -38,7 +38,7 @@ class GeneticAlgorithm:
             new_population.extend([child1,child2])
         
         self.population = new_population
-        self.population_size = len(new_population)
+        self.__population_size = len(new_population)
 
     def mutation(self):
         new_population = []
@@ -72,10 +72,10 @@ class GeneticAlgorithm:
             a,_ = element
             populationbis.append(a)
         self.population = populationbis
-        self.population_size = len(populationbis)
+        self.__population_size = len(populationbis)
     
     def run(self,seq,traj):
-        for i in range(self.population_size//2-1):
+        for i in range(self.__population_size//2-1):
             self.selection(seq,traj)
             self.crossover()
             self.mutation()
