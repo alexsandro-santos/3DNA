@@ -1,4 +1,4 @@
-from json import load as json_load
+import json
 from os import path as os_path
 
 here = os_path.abspath(os_path.dirname(__file__))
@@ -12,7 +12,7 @@ class RotTable:
     def __init__(self, filename: str = None):
         if filename is None:
             filename = os_path.join(here, 'table.json')
-        self.rot_table = json_load(open(filename))
+        self.rot_table = json.json_load(open(filename))
 
     ###################
     # WRITING METHODS #
@@ -50,3 +50,7 @@ class RotTable:
         return self.getTable() == object2.getTable()
 
     ###################
+    # TO JSON METHODS #
+    def toJSON(self, filename: str):
+        with open(filename, 'w') as outfile:
+            json.dump(self.getTable(), outfile)
