@@ -83,8 +83,9 @@ class GeneticAlgorithm:
             new_population.append(a)
             new_score.append(s)
         self.population = new_population
-        self.population_size = len(new_population)
+        self.__population_size = len(new_population)
         self.score = new_score
+    
     def run(self,seq,traj):
        while self.__population_size > 2:
            self.selection(seq,traj)
