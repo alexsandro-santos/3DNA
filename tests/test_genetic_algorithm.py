@@ -1,6 +1,6 @@
 import unittest
-from .genetic_algorithm import *
-from .RotTable import RotTable
+from dna.genetic_algorithm import *
+from dna.RotTable import RotTable
 
 class TestGeneticAlgorithm(unittest.TestCase):
     def test_populate(self):
