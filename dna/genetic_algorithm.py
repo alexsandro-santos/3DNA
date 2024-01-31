@@ -7,8 +7,10 @@ class GeneticAlgorithm:
     def __init__(self, population_size: int, og_table: RotTable, mutation_prob: float) -> None:
         self.__population_size = population_size
         self._population = []
+        self.scores = []
         self.og_table = og_table
         self.__mutation_prob = mutation_prob
+        self.scores = []
         self._populate()
 
     @property
@@ -23,22 +25,26 @@ class GeneticAlgorithm:
         self.population.append(self.og_table)
         self.population.extend([uniform_randomize(self.og_table) for _ in range(self.__population_size - 1)])
     
-    def evaluate(self,seq,traj):
-        self.scores = []
+    def evaluate(self,seq,traj): #passed the self.score to init
+        new_scores = []
         for table in self.population:
             traj.compute(seq,table)
-            self.scores += [traj.getLength()]
+            new_scores += [traj.getLength()]
+        self.scores = new_scores
 
     def crossover(self):
         new_population = []
-        for i in range(0, self.__population_size, 2):
+        for i in range(0, self.__population_size, 2): #fix index out of range
             parent1 = self.population[i]
             parent2 = self.population[i+1]
+            # print(f"parent1 : {i}")
+            # print(f"parent2 : {i+1}")
             child1, child2 = simple_crossover(parent1, parent2)
             new_population.extend([child1,child2])
         
         self.population = new_population
-        self.population_size = len(new_population)
+        self.__population_size = len(new_population)
+        # print(f"new population size : {self.__population_size}")
 
     def mutation(self):
         new_population = []
@@ -53,38 +59,45 @@ class GeneticAlgorithm:
     
     def selection(self,seq,traj):
         populations = self.population
-        score = self.evaluate(seq,traj)
-        populationscore = [(populations[i],score[i]) for i in range(len(self.population))]
-        populationbis = []
-        while(len(populationscore)>1):
-            deux_elements_aleatoires = sample(populationscore, 2)
-            for element in deux_elements_aleatoires:
-                populationscore.remove(element)
-            t1,s1 = deux_elements_aleatoires[0]
-            t2,s2 = deux_elements_aleatoires[1]
+        self.evaluate(seq,traj)
+        score = self.scores
+        population_score = [(populations[i],score[i]) for i in range(len(self.population))]
+        new_population = []
+        new_score = []
+        while(len(population_score)>1):
+            two_random_elements = sample(population_score, 2)
+            for element in two_random_elements:
+                population_score.remove(element)
+            t1,s1 = two_random_elements[0]
+            t2,s2 = two_random_elements[1]
             if (s1>s2):
-                populationbis.append(t2)
+                new_population.append(t2)
+                new_score.append(s2)
                 #print(f"les élements aléatoires : {deux_elements_aleatoires}, le selectionné : {(t2,s2)}")
             else:
-                populationbis.append(t1)
+                new_population.append(t1)
+                new_score.append(s1)
                 #print(f"les élements aléatoires : {deux_elements_aleatoires}, le selectionné : {(t1,s1)}")
-        for element in populationscore: #Maybe change this, if we have an odd number of population,we keep the one who didn't fight 
-            a,_ = element
-            populationbis.append(a)
-        self.population = populationbis
-        self.population_size = len(populationbis)
+        for element in population_score: #Maybe change this, if we have an odd number of population,we keep the one who didn't fight 
+            a,s = element
+            new_population.append(a)
+            new_score.append(s)
+        self.population = new_population
+        self.__population_size = len(new_population)
+        self.score = new_score
     
     def run(self,seq,traj):
-        for i in range(self.population_size//2-1):
-            self.selection(seq,traj)
-            self.crossover()
-            self.mutation()
+       while self.__population_size > 2:
+           self.selection(seq,traj)
+           self.crossover()
+           self.mutation()
+
 
     def get_results(self, seq, traj)->(RotTable, float): #returns the best table and its score
         self.evaluate(seq,traj)
-        max_score = max(self.scores)
-        max_index = self.scores.index(max_score)
-        return self.population[max_index], max_score
+        best_score = min(self.scores)
+        min_index = self.scores.index(best_score)
+        return self.population[min_index], best_score
 
 ##############################################################################################################
 
