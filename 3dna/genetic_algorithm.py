@@ -43,7 +43,12 @@ class GeneticAlgorithm:
         new_population = []
         for table in self.population:
             if random() <= self.__mutation_prob:
-                pass #TODO finish the implementation
+                mutated_table = mutate(table)
+                new_population.append(mutated_table)
+            else:
+                new_population.append(table)
+
+        self.population = new_population
 
 
 ##############################################################################################################
@@ -166,3 +171,17 @@ def selection(genetic,seq,traj):
         populationbis.append(a)
     genetic.population = populationbis
     genetic.population_size = len(populationbis)
+
+def mutate(table: RotTable) -> RotTable:
+    mutated_table = deepcopy(table)
+    non_symmetric_table = table.getNonSymmetric()
+    dinucleotide = choice(list(non_symmetric_table.keys()))
+
+    if randint(0,1):
+        twist = mutated_table.getTwist(dinucleotide)
+        mutated_table.setTwist(dinucleotide, gauss(twist, non_symmetric_table[dinucleotide][3]/10))
+    else:
+        wedge = mutated_table.getWedge(dinucleotide)
+        mutated_table.setWedge(dinucleotide, gauss(wedge, non_symmetric_table[dinucleotide][4]/10))
+
+    return symmetrizeTable(mutated_table)
