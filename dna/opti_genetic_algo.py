@@ -91,7 +91,6 @@ class GeneticAlgorithm:
                 final_scores.append(evaluate_table(table,self.seq,self.traj))
         self.population += final_population
         self.scores += final_scores
-        print(f"scores: {self.scores}")
         
         
     
