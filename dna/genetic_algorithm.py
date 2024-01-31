@@ -1,17 +1,20 @@
-from random import randint, gauss, uniform, choice, sample, random
+from random import randint, gauss, uniform, choice,choices, sample, random
 from copy import deepcopy
 from .RotTable import RotTable
 from .Traj3D import Traj3D
 
 class GeneticAlgorithm:
-    def __init__(self, population_size: int, og_table: RotTable, mutation_prob: float) -> None:
+    def __init__(self, population_size: int, og_table: RotTable, mutation_prob: float, seq: str, traj: Traj3D) -> None:
         self.__population_size = population_size
         self._population = []
         self.scores = []
         self.og_table = og_table
         self.__mutation_prob = mutation_prob
+        self.seq=seq
+        self.traj=traj
         self.scores = []
         self._populate()
+        self.evaluate()
 
     @property
     def population(self):
@@ -25,28 +28,29 @@ class GeneticAlgorithm:
         self.population.append(self.og_table)
         self.population.extend([uniform_randomize(self.og_table) for _ in range(self.__population_size - 1)])
     
-    def evaluate(self,seq,traj): #passed the self.score to init
+    def evaluate(self): #passed the self.score to init
         new_scores = []
         for table in self.population:
-            traj.compute(seq,table)
-            new_scores += [traj.getLength()]
+            self.traj.compute(self.seq,table)
+            new_scores += [self.traj.getLength()]
         self.scores = new_scores
+        print(f"Best score {min(self.scores)}")
 
     def crossover(self):
         new_population = []
-        for i in range(0, self.__population_size, 2): #fix index out of range
-            parent1 = self.population[i]
-            parent2 = self.population[i+1]
-            # print(f"parent1 : {i}")
-            # print(f"parent2 : {i+1}")
-            child1, child2 = simple_crossover(parent1, parent2)
+        weights=[]
+        for score in self.scores:
+            weights.append(1/score)
+        for _ in range(0, self.__population_size, 2):
+            parent1,parent2 =choices(self.population, k=2, weights=weights)
+            child1, child2 = double_crossover(parent1, parent2)
             new_population.extend([child1,child2])
         
         self.population = new_population
         self.__population_size = len(new_population)
         # print(f"new population size : {self.__population_size}")
 
-    def mutation(self):
+    def mutation(self): #TODO: symmetrize
         new_population = []
         for table in self.population:
             if random() <= self.__mutation_prob:
@@ -57,9 +61,9 @@ class GeneticAlgorithm:
 
         self.population = new_population
     
-    def selection(self,seq,traj):
+    def selection(self):
         populations = self.population
-        self.evaluate(seq,traj)
+        self.evaluate()
         score = self.scores
         population_score = [(populations[i],score[i]) for i in range(len(self.population))]
         new_population = []
@@ -84,17 +88,17 @@ class GeneticAlgorithm:
             new_score.append(s)
         self.population = new_population
         self.__population_size = len(new_population)
-        self.score = new_score
+        self.scores = new_score
     
-    def run(self,seq,traj):
+    def run(self):
        while self.__population_size > 2:
-           self.selection(seq,traj)
+           self.selection()
            self.crossover()
            self.mutation()
 
 
-    def get_results(self, seq, traj)->(RotTable, float): #returns the best table and its score
-        self.evaluate(seq,traj)
+    def get_results(self)->(RotTable, float): #returns the best table and its score
+        self.evaluate()
         best_score = min(self.scores)
         min_index = self.scores.index(best_score)
         return self.population[min_index], best_score
@@ -194,7 +198,35 @@ def simple_crossover(parent1: RotTable, parent2: RotTable):
             child2.setTwist(non_symmetric_elements[i], parent1.getTwist(non_symmetric_elements[i]))
             child2.setWedge(non_symmetric_elements[i], parent1.getWedge(non_symmetric_elements[i]))
         
-        return child1, child2
+        return symmetrizeTable(child1), symmetrizeTable(child2) #FIXED SYMMETRIZE
+
+def double_crossover(parent1: RotTable, parent2: RotTable):
+    cross_point1 = randint(1,9)
+    cross_point2 = randint(cross_point1,9)
+    non_symmetric_elements = ["AA","AC","AG","CA","CC","GA","AT","GC","CG","TA"]
+    child1 = deepcopy(parent1)
+    child2 = deepcopy(parent2)
+    if cross_point1 == cross_point2:
+        return simple_crossover(parent1,parent2)
+    
+    elif cross_point1 > cross_point2:
+        cross_point1, cross_point2 = cross_point2, cross_point1
+
+    for i in range(cross_point1):
+        child1.setTwist(non_symmetric_elements[i], parent2.getTwist(non_symmetric_elements[i]))
+        child1.setWedge(non_symmetric_elements[i], parent2.getWedge(non_symmetric_elements[i]))
+        
+        child2.setTwist(non_symmetric_elements[i], parent1.getTwist(non_symmetric_elements[i]))
+        child2.setWedge(non_symmetric_elements[i], parent1.getWedge(non_symmetric_elements[i]))
+
+    for j in range(cross_point2,10):
+        child1.setTwist(non_symmetric_elements[j], parent2.getTwist(non_symmetric_elements[j]))
+        child1.setWedge(non_symmetric_elements[j], parent2.getWedge(non_symmetric_elements[j]))
+        
+        child2.setTwist(non_symmetric_elements[j], parent1.getTwist(non_symmetric_elements[j]))
+        child2.setWedge(non_symmetric_elements[j], parent1.getWedge(non_symmetric_elements[j]))
+
+    return symmetrizeTable(child1), symmetrizeTable(child2)
 
 def mutate(table: RotTable) -> RotTable:
     mutated_table = deepcopy(table)
