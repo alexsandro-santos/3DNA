@@ -94,9 +94,9 @@ class GeneticAlgorithm:
 
     def get_results(self, seq, traj)->(RotTable, float): #returns the best table and its score
         self.evaluate(seq,traj)
-        max_score = max(self.scores)
-        max_index = self.scores.index(max_score)
-        return self.population[max_index], max_score
+        best_score = min(self.scores)
+        min_index = self.scores.index(best_score)
+        return self.population[min_index], best_score
 
 ##############################################################################################################
 
