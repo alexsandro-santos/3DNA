@@ -108,11 +108,9 @@ class GeneticAlgorithm:
         min_index = self.scores.index(best_score)
         return self.population[min_index], best_score
     
-    def write_results(self,filename:str):
-        table, score = self.get_results()
-        with open(filename, 'w') as outfile:
-            json.dump(table.getTable(), outfile, indent=4)
-
+    def write_results(self, filename):
+        table, score=self.get_results()
+        table.toJSON(filename)
 ##############################################################################################################
 
 def symmetrizeTable(incomplete_table: RotTable):
