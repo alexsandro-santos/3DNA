@@ -49,6 +49,29 @@ class GeneticAlgorithm:
                 new_population.append(table)
 
         self.population = new_population
+    
+    def selection(self,seq,traj):
+        populations = self.population
+        score = self.evaluate(seq,traj)
+        populationscore = [(populations[i],score[i]) for i in range(len(self.population))]
+        populationbis = []
+        while(len(populationscore)>1):
+            deux_elements_aleatoires = sample(populationscore, 2)
+            for element in deux_elements_aleatoires:
+                populationscore.remove(element)
+            t1,s1 = deux_elements_aleatoires[0]
+            t2,s2 = deux_elements_aleatoires[1]
+            if (s1>s2):
+                populationbis.append(t2)
+                #print(f"les élements aléatoires : {deux_elements_aleatoires}, le selectionné : {(t2,s2)}")
+            else:
+                populationbis.append(t1)
+                #print(f"les élements aléatoires : {deux_elements_aleatoires}, le selectionné : {(t1,s1)}")
+        for element in populationscore: #Maybe change this, if we have an odd number of population,we keep the one who didn't fight 
+            a,_ = element
+            populationbis.append(a)
+        self.population = populationbis
+        self.population_size = len(populationbis)
 
 
 ##############################################################################################################
@@ -147,30 +170,6 @@ def simple_crossover(parent1: RotTable, parent2: RotTable):
             child2.setWedge(non_symmetric_elements[i], parent1.getWedge(non_symmetric_elements[i]))
         
         return child1, child2
-
-def selection(genetic,seq,traj):
-
-    populations = genetic.population
-    score = genetic.evaluate(seq,traj)
-    populationscore = [(populations[i],score[i]) for i in range(len(genetic.population))]
-    populationbis = []
-    while(len(populationscore)>1):
-        deux_elements_aleatoires = sample(populationscore, 2)
-        for element in deux_elements_aleatoires:
-            populationscore.remove(element)
-        t1,s1 = deux_elements_aleatoires[0]
-        t2,s2 = deux_elements_aleatoires[1]
-        if (s1>s2):
-            populationbis.append(t2)
-            #print(f"les élements aléatoires : {deux_elements_aleatoires}, le selectionné : {(t2,s2)}")
-        else:
-            populationbis.append(t1)
-            #print(f"les élements aléatoires : {deux_elements_aleatoires}, le selectionné : {(t1,s1)}")
-    for element in populationscore: #Maybe change this, if we have an odd number of population,we keep the one who didn't fight 
-        a,_ = element
-        populationbis.append(a)
-    genetic.population = populationbis
-    genetic.population_size = len(populationbis)
 
 def mutate(table: RotTable) -> RotTable:
     mutated_table = deepcopy(table)
