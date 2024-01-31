@@ -31,51 +31,17 @@ class GeneticAlgorithm:
     # initialize a population with a uniform distribution around the og_table
         self.population.append(self.og_table)
         self.population.extend([uniform_randomize(self.og_table) for _ in range(self.__population_size - 1)])
-    
+
     def evaluate(self): #passed the self.score to init
-    # evaluation fonction : return a list where scores[i] is the distance between the last and first point using the rot_table i
+        # evaluation fonction : return a list where scores[i] is the distance between the last and first point using the rot_table i
         new_scores = []
         for table in self.population:
             self.traj.compute(self.seq,table)
-            new_scores += [self.traj.getLength()]
+            new_scores += [self.traj.getEval()]
         self.scores = new_scores
-
-    def crossover(self):
-    # shuffle the population : takes 2 individuals to create 2 children => doubling the total population
-        new_population = []
-        weights=[]
-        max_score=max(self.scores)
-        for score in self.scores:
-            weights.append(max_score-score)
-        for _ in range(0, self.__population_size, 2):
-            parent1,parent2 = random.choices(self.population, k=2, weights=weights)
-            while (parent1 == parent2):
-                parent1,parent2 = random.choices(self.population, k=2, weights=weights)
-            child1, child2 = double_crossover(parent1, parent2)
-            new_population.extend([child1,child2])
-        
-        self.population += new_population
-        self.__population_size = len(new_population)
-        # print(f"new population size : {self.__population_size}")
-
-    def mutation(self):
-        # apply mutations with a low probability : allows us to not stuck in a local minimum 
-        if self.seed is not None:
-            random.seed(self.seed)
-        new_population = []
-        for table in self.population:
-            if random.random() <= self.__mutation_prob:
-                mutated_table = mutate(table)
-                new_population.append(mutated_table)
-            else:
-                new_population.append(table)
-
-        self.population = new_population
     
     def selection(self):
-    #
         populations = self.population
-        self.evaluate()
         score = self.scores
         population_score = [(populations[i],score[i]) for i in range(len(self.population))]
         new_population = []
@@ -101,24 +67,50 @@ class GeneticAlgorithm:
         self.population = new_population
         self.__population_size = len(new_population)
         self.scores = new_score
-    
+
+    def generate_children(self):
+        #crossover
+        new_population = []
+        final_population = []
+        weights=[]
+        final_scores=[]
+        max_score=max(self.scores)
+        for score in self.scores:
+            weights.append(max_score-score+1)
+        for _ in range(0, self.__population_size, 2):
+            parent1,parent2 = random.choices(self.population, k=2, weights=weights)
+            child1, child2 = double_crossover(parent1, parent2)
+            new_population.extend([child1,child2])
+
+        #mutation of the children
+        for table in new_population:
+            if random() <= self.__mutation_prob:
+                final_population.append(mutate(table))
+                final_scores.append(evaluate_table(table,self.seq,self.traj))
+            else:
+                final_population.append(table)
+                final_scores.append(evaluate_table(table,self.seq,self.traj))
+        self.population += final_population
+        self.scores += final_scores
+        
     def run(self):
        i = 0
        while i<100:
-        #    print(f"population size : {self.__population_size}")
-        #    print(f"best score : {min(self.scores)}")
+           print(f"population size : {self.__population_size}")
+           print(f"best score : {min(self.scores)}")
            self.selection()
-           self.crossover()
-           self.mutation()
+           self.generate_children()
            i+=1
 
 
     def get_results(self)->(RotTable, float): #returns the best table and its score
-        self.evaluate()
         best_score = min(self.scores)
         min_index = self.scores.index(best_score)
         return self.population[min_index], best_score
-
+    
+    def write_results(self, filename):
+        table, score=self.get_results()
+        table.toJSON(filename)
 ##############################################################################################################
 
 def symmetrizeTable(incomplete_table: RotTable):
@@ -130,36 +122,6 @@ def symmetrizeTable(incomplete_table: RotTable):
         table.setDirection(symmetry[base_pair], -table.getDirection(base_pair))
     
     return table
-
-
-def gaussian_randomize(table: RotTable) -> RotTable:
-    new_table = deepcopy(table)
-    means = {
-        "AA": [35.62 , 7.2 , -154],
-        "AC": [34.4  , 1.1 ,  143],
-        "AG": [27.7  , 8.4 ,    2],
-        "AT": [31.5  , 2.6 ,    0],
-        "CA": [34.5  , 3.5 ,  -64],
-        "CC": [33.67 , 2.1 ,  -57],
-        "CG": [29.8  , 6.7 ,    0],
-        "CT": [27.7  , 8.4 ,   -2],
-        "GA": [36.9  , 5.3 ,  120],
-        "GC": [40    , 5   ,  180],
-        "GG": [33.67 , 2.1 ,   57],
-        "GT": [34.4  , 1.1 , -143],
-        "TA": [36    , 0.9 ,    0],
-        "TC": [36.9  , 5.3 , -120],
-        "TG": [34.5  , 3.5 ,   64],
-        "TT": [35.62 , 7.2 ,  154]
-    }
-
-    non_symmetric_table = table.getNonSymmetric()
-    for dinucleotide, rotations in non_symmetric_table.items():
-        new_table.setTwist(dinucleotide, random.gauss(means[dinucleotide][0], rotations[3]))
-        new_table.setWedge(dinucleotide, random.gauss(means[dinucleotide][1], rotations[4]))
-        
-    return symmetrizeTable(new_table)
-
 
 def uniform_randomize(table: RotTable) -> RotTable:
     #uniform: (-2sigma,+2sigma)
@@ -195,12 +157,6 @@ def uniform_randomize(table: RotTable) -> RotTable:
 
     return symmetrizeTable(new_table)
 
-
-def read_file(path):
-    lineList = [line.rstrip('\n') for line in open(path)]
-    seq = ''.join(lineList[1:])
-
-    return seq
 
 def simple_crossover(parent1: RotTable, parent2: RotTable, seed = None):
         if seed is not None:
@@ -269,3 +225,10 @@ def mutate(table: RotTable) -> RotTable:
         mutated_table.setWedge(dinucleotide, random.gauss(wedge, non_symmetric_table[dinucleotide][4]))
 
     return symmetrizeTable(mutated_table)
+
+
+
+def evaluate_table(table,seq, traj): #passed the self.score to init
+    # evaluation fonction : return a list where scores[i] is the distance between the last and first point using the rot_table i
+    traj.compute(seq,table)
+    return traj.getEval()
