@@ -74,7 +74,7 @@ class GeneticAlgorithm:
         final_scores=[]
         max_score=max(self.scores)
         for score in self.scores:
-            weights.append(max_score-score+1)
+            weights.append((max_score-score)/max_score+1)
         for _ in range(0, self.__population_size, 2):
             parent1,parent2 = random.choices(self.population, k=2, weights=weights)
             child1, child2 = double_crossover(parent1, parent2)
