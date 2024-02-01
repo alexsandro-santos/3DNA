@@ -60,14 +60,11 @@ class TestGeneticAlgorithm(unittest.TestCase):
         rot_table2 = RotTable()
         rot_table2.setTwist("AA",rot_table.getTwist("AA")+1) #Value around 2200 score
         a.population = [rot_table,rot_table2]
+        a.evaluate()
         a.selection()
         self.assertEqual(len(a.population),1)
         for table in a.population:
-            dunecleotide_list = ["AA","AC","AG","AT","CA","CC","CG","CT","GA","GC","GG","GT","TA","TC","TG","TT"]
-            for dunecleotide in dunecleotide_list:
-                self.assertEqual(table.getTwist(dunecleotide),rot_table2.getTwist(dunecleotide))
-                self.assertEqual(table.getWedge(dunecleotide),rot_table2.getWedge(dunecleotide))
-                self.assertEqual(table.getDirection(dunecleotide),rot_table2.getDirection(dunecleotide))
+            self.assertEqual(table,rot_table2)
 
 
     def test_get_results(self):

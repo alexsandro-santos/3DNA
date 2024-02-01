@@ -206,7 +206,6 @@ def mutate(table: RotTable,seed = None) -> RotTable:
     mutated_table = deepcopy(table)
     non_symmetric_table = table.getNonSymmetric()
     dinucleotide = random.choice(list(non_symmetric_table.keys()))
-    print(dinucleotide)
     if random.randint(0,1):
 
         twist = mutated_table.getTwist(dinucleotide)
@@ -214,7 +213,6 @@ def mutate(table: RotTable,seed = None) -> RotTable:
     else:
         wedge = mutated_table.getWedge(dinucleotide)
         mutated_table.setWedge(dinucleotide, random.gauss(wedge, non_symmetric_table[dinucleotide][4]))
-
     return symmetrizeTable(mutated_table)
 
 
