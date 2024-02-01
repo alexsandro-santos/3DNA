@@ -86,7 +86,14 @@ class Traj3D:
     def draw(self):
         xyz = np.array(self.__Traj3D)
         x, y, z = xyz[:,0], xyz[:,1], xyz[:,2]
-        self.ax.plot(x,y,z)
+        self.ax.plot(x, y, z)
+        
+        # Mark the first vector with a circle
+        self.ax.scatter(x[0], y[0], z[0], color='red', marker='o')
+        
+        # Mark the last vector with a circle
+        self.ax.scatter(x[-1], y[-1], z[-1], color='blue', marker='o')
+        
         plt.show()
 
     def write(self, filename: str):
