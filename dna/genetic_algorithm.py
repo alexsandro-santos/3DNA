@@ -201,6 +201,8 @@ def double_crossover(parent1: RotTable, parent2: RotTable, seed=None):
 
 
 def mutate(table: RotTable,seed = None) -> RotTable:
+    if seed is not None:
+        random.seed(seed)
     mutated_table = deepcopy(table)
     non_symmetric_table = table.getNonSymmetric()
     dinucleotide = random.choice(list(non_symmetric_table.keys()))
