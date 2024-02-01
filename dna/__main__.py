@@ -19,9 +19,8 @@ def main():
     # Formatting
     seq = ''.join(lineList[1:])
     traj.compute(seq,rot_table)
-    # recuit_simule(seq,traj,1,60)
+    recuit_simule(seq,traj,1,60)
     print(traj.getLength())
-    l = traj.getTraj()
     traj.draw()
     traj.write(args.filename+".png")
 
