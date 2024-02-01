@@ -2,6 +2,7 @@ import random
 from copy import deepcopy
 from .RotTable import RotTable
 from .Traj3D import Traj3D
+from .random_choices import choose_2
 import numpy as np
 
 class GeneticAlgorithm:
@@ -74,7 +75,7 @@ class GeneticAlgorithm:
         weights = [max_score - score for score in self.scores]
         final_scores=[]
         for _ in range(0, self.__population_size, 2):
-            parent1,parent2 = random.choices(self.population, k=2, weights=self.scores)
+            parent1,parent2 = choose_2(self.population, weights=weights)
             child1, child2, child3, child4= simple_crossover(parent1, parent2)
             new_population.extend([child1,child2, child3, child4])
 
@@ -222,9 +223,13 @@ def mutate(table: RotTable, seed: int = None) -> RotTable:
     if random.randint(0,1):
 
         twist = mutated_table.getTwist(dinucleotide)
-        mutated_table.setTwist(dinucleotide, random.gauss(twist, non_symmetric_table[dinucleotide][3]))
+        lb=twist-2*non_symmetric_table[dinucleotide][3]
+        up=twist-2*non_symmetric_table[dinucleotide][3]
+        mutated_table.setTwist(dinucleotide, random.uniform(lb, up))
     else:
         wedge = mutated_table.getWedge(dinucleotide)
-        mutated_table.setWedge(dinucleotide, random.gauss(wedge, non_symmetric_table[dinucleotide][4]))
+        lb=wedge-2*non_symmetric_table[dinucleotide][4]
+        up=wedge-2*non_symmetric_table[dinucleotide][4]
+        mutated_table.setWedge(dinucleotide, random.uniform(lb,up))
 
     return symmetrizeTable(mutated_table)
