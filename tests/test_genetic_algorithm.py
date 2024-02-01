@@ -122,7 +122,7 @@ class TestGeneticAlgorithmFuncs(unittest.TestCase):
     "TC": [36.9  , 5.3 , -120 ,      0.9  ,  6     , 0],
     "TG": [34.5  , 3.5 ,   64 ,      0.9  , 34     , 0],
     "TT": [0     , 0   ,    0 ,      0.06 ,  0.6   , 0]
-}
+    }
         
         child2_assert = {
     "AA": [35.62 , 7.2 , -154 ,      0.06 ,  0.6   , 0],
@@ -141,10 +141,22 @@ class TestGeneticAlgorithmFuncs(unittest.TestCase):
     "TC": [5     , 5   ,   -5 ,      0.9  ,  6     , 0],
     "TG": [3     , 3   ,   -3 ,      0.9  , 34     , 0],
     "TT": [35.62 , 7.2 ,  154 ,      0.06 ,  0.6   , 0]
-}   
+    }   
         self.assertEqual(child1.getTable(), child1_assert)
         self.assertEqual(child2.getTable(), child2_assert)
 
+
+    def test_uniform_randomize(self):
+        dunecleotide_list = ["AA","AC","AG","AT","CA","CC","CG","CT","GA","GC","GG","GT","TA","TC","TG","TT"]
+        table = RotTable()
+        random_table = uniform_randomize(table,1)
+        table = RotTable('tests/random.json')
+        for dunecleotide in dunecleotide_list:
+            self.assertEqual(table.getTwist(dunecleotide),random_table.getTwist(dunecleotide))
+            self.assertEqual(table.getWedge(dunecleotide),random_table.getWedge(dunecleotide))
+            self.assertEqual(table.getDirection(dunecleotide),random_table.getDirection(dunecleotide))         
+        
+    
     def test_double_crossover(self):
         parent1 = RotTable()
         parent2 = RotTable('tests/testtable.json')

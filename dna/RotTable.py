@@ -8,11 +8,19 @@ class RotTable:
 
     # 3 first values: 3 angle values
     # 3 last values: SD values
+    
+    #def __init__(self, filename: str = None):
+        #if filename is None:
+            #filename = os_path.join(here, 'table.json')
+        #self.rot_table = json.load(open(filename))
 
-    def __init__(self, filename: str = None):
+
+    def __init__(self, filename: str = None): #I modified the way we init a rottable to close the file after we reading it
         if filename is None:
             filename = os_path.join(here, 'table.json')
-        self.rot_table = json.load(open(filename))
+        with open(filename) as file:
+            self.rot_table = json.load(file)
+
 
     ###################
     # WRITING METHODS #

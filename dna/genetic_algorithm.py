@@ -121,8 +121,9 @@ def symmetrizeTable(incomplete_table: RotTable):
     
     return table
 
-
-def uniform_randomize(table: RotTable) -> RotTable:
+def uniform_randomize(table: RotTable,seed = None) -> RotTable:
+    if seed is not None:
+        random.seed(seed)
     #uniform: (-2sigma,+2sigma)
     new_table = deepcopy(table)
     means = {
