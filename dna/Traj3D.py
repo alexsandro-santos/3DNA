@@ -87,6 +87,11 @@ class Traj3D:
         xyz = np.array(self.__Traj3D)
         x, y, z = xyz[:,0], xyz[:,1], xyz[:,2]
         self.ax.plot(x,y,z)
+        self.ax.scatter([x[0]], [y[0]], [z[0]], color='green', marker='o', s=100)
+
+        # Add a star marker for the end of the trajectory
+        self.ax.scatter([x[-1]], [y[-1]], [z[-1]], color='red', marker='o', s=100)
+
         plt.show()
 
     def write(self, filename: str):

@@ -76,7 +76,7 @@ class GeneticAlgorithm:
         final_scores=[]
         for _ in range(0, self.__population_size, 2):
             parent1,parent2 = choose_2(self.population, weights=weights)
-            child1, child2, child3, child4= simple_crossover(parent1, parent2)
+            child1, child2, child3, child4 = double_crossover(parent1, parent2)
             new_population.extend([child1,child2, child3, child4])
 
         # mutation of the children
@@ -188,15 +188,14 @@ def simple_crossover(parent1: RotTable, parent2: RotTable, seed: int = None) -> 
 def double_crossover(parent1: RotTable, parent2: RotTable, seed: int = None) -> tuple[RotTable, RotTable]:
     if seed is not None:
         random.seed(seed)
-    cross_point1 = random.randint(1,9)
-    cross_point2 = random.randint(1,9)
+    cross_point1, cross_point2, cross_point3, cross_point4 = random.sample(range(1,10), 4)
     non_symmetric_elements = ["AA","AC","AG","CA","CC","GA","AT","GC","CG","TA"]
     child1 = deepcopy(parent1)
     child2 = deepcopy(parent2)
-    if cross_point1 == cross_point2:
-        return simple_crossover(parent1,parent2)
+    child3 = deepcopy(parent1)
+    child4 = deepcopy(parent2)
     
-    elif cross_point1 > cross_point2:
+    if cross_point1 > cross_point2:
         cross_point1, cross_point2 = cross_point2, cross_point1
 
     for i in range(cross_point1):
@@ -209,7 +208,20 @@ def double_crossover(parent1: RotTable, parent2: RotTable, seed: int = None) -> 
 
         child2.setRow(non_symmetric_elements[j], parent1.getRow(non_symmetric_elements[j]))
 
-    return symmetrizeTable(child1), symmetrizeTable(child2)
+    if cross_point3 > cross_point4:
+        cross_point1, cross_point2 = cross_point2, cross_point1
+
+    for i in range(cross_point3):
+        child3.setRow(non_symmetric_elements[i], parent2.getRow(non_symmetric_elements[i]))
+
+        child4.setRow(non_symmetric_elements[i], parent1.getRow(non_symmetric_elements[i]))
+        
+    for j in range(cross_point4,10):
+        child3.setRow(non_symmetric_elements[j], parent2.getRow(non_symmetric_elements[j]))
+
+        child4.setRow(non_symmetric_elements[j], parent1.getRow(non_symmetric_elements[j]))
+    
+    return symmetrizeTable(child1), symmetrizeTable(child2), symmetrizeTable(child3), symmetrizeTable(child4)
 
 
 def mutate(table: RotTable, seed: int = None) -> RotTable:
