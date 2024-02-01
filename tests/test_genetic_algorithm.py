@@ -106,7 +106,7 @@ class TestGeneticAlgorithmFuncs(unittest.TestCase):
         dunecleotide_list = ["AA","AC","AG","AT","CA","CC","CG","CT","GA","GC","GG","GT","TA","TC","TG","TT"]
         table = RotTable()
         random_table = uniform_randomize(table,1)
-        table = RotTable('tests/random.json')
+        table = RotTable('tests/random_uniform.json')
         for dunecleotide in dunecleotide_list:
             self.assertEqual(table.getTwist(dunecleotide),random_table.getTwist(dunecleotide))
             self.assertEqual(table.getWedge(dunecleotide),random_table.getWedge(dunecleotide))
