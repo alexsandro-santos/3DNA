@@ -167,22 +167,11 @@ def simple_crossover(parent1: RotTable, parent2: RotTable, seed = None):
         child2 = deepcopy(parent2)
 
         for i in range(cross_point):
-            child1.setTwist(non_symmetric_elements[i], parent2.getTwist(non_symmetric_elements[i]))
-            child1.setWedge(non_symmetric_elements[i], parent2.getWedge(non_symmetric_elements[i]))
-            child1.setDirection(non_symmetric_elements[i], parent2.getDirection(non_symmetric_elements[i]))
-            child1.setSDTwist(non_symmetric_elements[i], parent2.getSDTwist(non_symmetric_elements[i]))
-            child1.setSDWedge(non_symmetric_elements[i], parent2.getSDWedge(non_symmetric_elements[i]))
-            child1.setSDDirection(non_symmetric_elements[i], parent2.getSDDirection(non_symmetric_elements[i]))
+            child1.setRow(non_symmetric_elements[i], parent2.getRow(non_symmetric_elements[i]))
             
-            child2.setTwist(non_symmetric_elements[i], parent1.getTwist(non_symmetric_elements[i]))
-            child2.setWedge(non_symmetric_elements[i], parent1.getWedge(non_symmetric_elements[i]))
-            child2.setDirection(non_symmetric_elements[i], parent1.getDirection(non_symmetric_elements[i]))
-            child2.setSDTwist(non_symmetric_elements[i], parent1.getSDTwist(non_symmetric_elements[i]))
-            child2.setSDWedge(non_symmetric_elements[i], parent1.getSDWedge(non_symmetric_elements[i]))
-            child2.setSDDirection(non_symmetric_elements[i], parent1.getSDDirection(non_symmetric_elements[i]))
-
+            child2.setRow(non_symmetric_elements[i], parent1.getRow(non_symmetric_elements[i]))
         
-        return symmetrizeTable(child1), symmetrizeTable(child2) #FIXED SYMMETRIZE
+        return symmetrizeTable(child1), symmetrizeTable(child2)
 
 def double_crossover(parent1: RotTable, parent2: RotTable):
     cross_point1 = random.randint(1,9)
@@ -197,18 +186,14 @@ def double_crossover(parent1: RotTable, parent2: RotTable):
         cross_point1, cross_point2 = cross_point2, cross_point1
 
     for i in range(cross_point1):
-        child1.setTwist(non_symmetric_elements[i], parent2.getTwist(non_symmetric_elements[i]))
-        child1.setWedge(non_symmetric_elements[i], parent2.getWedge(non_symmetric_elements[i]))
-        
-        child2.setTwist(non_symmetric_elements[i], parent1.getTwist(non_symmetric_elements[i]))
-        child2.setWedge(non_symmetric_elements[i], parent1.getWedge(non_symmetric_elements[i]))
+        child1.setRow(non_symmetric_elements[i], parent2.getRow(non_symmetric_elements[i]))
 
-    for j in range(cross_point2,10):
-        child1.setTwist(non_symmetric_elements[j], parent2.getTwist(non_symmetric_elements[j]))
-        child1.setWedge(non_symmetric_elements[j], parent2.getWedge(non_symmetric_elements[j]))
+        child2.setRow(non_symmetric_elements[i], parent1.getRow(non_symmetric_elements[i]))
         
-        child2.setTwist(non_symmetric_elements[j], parent1.getTwist(non_symmetric_elements[j]))
-        child2.setWedge(non_symmetric_elements[j], parent1.getWedge(non_symmetric_elements[j]))
+    for j in range(cross_point2,10):
+        child1.setRow(non_symmetric_elements[j], parent2.getRow(non_symmetric_elements[j]))
+
+        child2.setRow(non_symmetric_elements[j], parent1.getRow(non_symmetric_elements[j]))
 
     return symmetrizeTable(child1), symmetrizeTable(child2)
 

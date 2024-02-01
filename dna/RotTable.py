@@ -35,6 +35,15 @@ class RotTable:
     def setSDDirection(self, dinucleotide: str, value: float):
         self.rot_table[dinucleotide][5] = value
 
+    def setRow(self, dinucleotide: str, row: list):
+        self.setTwist(dinucleotide, row[0])
+        self.setWedge(dinucleotide, row[1])
+        self.setDirection(dinucleotide, row[2])
+        self.setSDTwist(dinucleotide, row[3])
+        self.setSDWedge(dinucleotide, row[4])
+        self.setSDDirection(dinucleotide, row[5])
+
+
     ###################
     # READING METHODS #
     ###################
@@ -63,6 +72,9 @@ class RotTable:
         NonSymmetric_elements = ["AA","AC","AG","CA","CC","GA","AT","GC","CG","TA"]
         table = self.getTable()
         return {elem:table[elem] for elem in NonSymmetric_elements}
+    
+    def getRow(self, dinucleotide:str) -> list:
+        return self.getTable()[dinucleotide]
 
     def __eq__(self, object2) -> bool:
         return self.getTable() == object2.getTable()
