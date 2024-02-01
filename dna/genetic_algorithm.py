@@ -84,7 +84,7 @@ class GeneticAlgorithm:
 
         #mutation of the children
         for table in new_population:
-            if random() <= self.__mutation_prob:
+            if random.random() <= self.__mutation_prob:
                 final_population.append(mutate(table))
                 final_scores.append(evaluate_table(table,self.seq,self.traj))
             else:
