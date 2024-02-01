@@ -31,7 +31,6 @@ def main():
     print(f"Best table: {table.getTable()}")
     algo.write_results("./dna/results.json")
 
-    traj=Traj3D()
     table=RotTable("./dna/results.json")
     traj.compute(seq,table)
     traj.draw()
