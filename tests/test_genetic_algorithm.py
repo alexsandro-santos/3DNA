@@ -145,5 +145,49 @@ class TestGeneticAlgorithmFuncs(unittest.TestCase):
         self.assertEqual(child1.getTable(), child1_assert)
         self.assertEqual(child2.getTable(), child2_assert)
 
+    def test_double_crossover(self):
+        parent1 = RotTable()
+        parent2 = RotTable('tests/testtable.json')
+        child1, child2 = simple_crossover(parent1, parent2, seed=1)
+        child1_assert = {
+    "AA": [0     , 0   ,    0 ,      0.06 ,  0.6   , 0],
+    "AC": [1     , 1   ,    1 ,      1.3  ,  5     , 0],
+    "AG": [2     , 2   ,    2 ,      1.5  ,  3     , 0],
+    "AT": [31.5  , 2.6 ,    0 ,      1.1  ,  2     , 0],
+    "CA": [34.5  , 3.5 ,  -64 ,      0.9  , 34     , 0],
+    "CC": [33.67 , 2.1 ,  -57 ,      0.07 ,  2.1   , 0],
+    "CG": [29.8  , 6.7 ,    0 ,      1.1  ,  1.5   , 0],
+    "CT": [2     , 2   ,   -2 ,      1.5  ,  3     , 0],
+    "GA": [36.9  , 5.3 ,  120 ,      0.9  ,  6     , 0],
+    "GC": [40    , 5   ,  180 ,      1.2  ,  1.275 , 0],
+    "GG": [33.67 , 2.1 ,   57 ,      0.07 ,  2.1   , 0],
+    "GT": [1     , 1   ,   -1 ,      1.3  ,  5     , 0],
+    "TA": [36    , 0.9 ,    0 ,      1.1  ,  2     , 0],
+    "TC": [36.9  , 5.3 , -120 ,      0.9  ,  6     , 0],
+    "TG": [34.5  , 3.5 ,   64 ,      0.9  , 34     , 0],
+    "TT": [0     , 0   ,    0 ,      0.06 ,  0.6   , 0]
+}
+        
+        child2_assert = {
+    "AA": [35.62 , 7.2 , -154 ,      0.06 ,  0.6   , 0],
+    "AC": [34.4  , 1.1 ,  143 ,      1.3  ,  5     , 0],
+    "AG": [27.7  , 8.4 ,    2 ,      1.5  ,  3     , 0],
+    "AT": [6     , 6   ,    6 ,      1.1  ,  2     , 0],
+    "CA": [3     , 3   ,    3 ,      0.9  , 34     , 0],
+    "CC": [4     , 4   ,    4 ,      0.07 ,  2.1   , 0],
+    "CG": [8     , 8   ,    8 ,      1.1  ,  1.5   , 0],
+    "CT": [27.7  , 8.4 ,   -2 ,      1.5  ,  3     , 0],
+    "GA": [5     , 5   ,    5 ,      0.9  ,  6     , 0],
+    "GC": [7     , 7   ,    7 ,      1.2  ,  1.275 , 0],
+    "GG": [4     , 4   ,   -4 ,      0.07 ,  2.1   , 0],
+    "GT": [34.4  , 1.1 , -143 ,      1.3  ,  5     , 0],
+    "TA": [9     , 9   ,    9 ,      1.1  ,  2     , 0],
+    "TC": [5     , 5   ,   -5 ,      0.9  ,  6     , 0],
+    "TG": [3     , 3   ,   -3 ,      0.9  , 34     , 0],
+    "TT": [35.62 , 7.2 ,  154 ,      0.06 ,  0.6   , 0]
+}   
+        self.assertEqual(child1.getTable(), child1_assert)
+        self.assertEqual(child2.getTable(), child2_assert)
+
 if __name__ == '__main__':
     unittest.main()
