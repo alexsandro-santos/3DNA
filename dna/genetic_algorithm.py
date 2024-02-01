@@ -210,6 +210,7 @@ def mutate(table: RotTable, seed: int = None) -> RotTable:
     mutated_table = deepcopy(table)
     non_symmetric_table = table.getNonSymmetric()
     dinucleotide = random.choice(list(non_symmetric_table.keys()))
+    # print(dinucleotide)
     if random.randint(0,1):
 
         twist = mutated_table.getTwist(dinucleotide)
