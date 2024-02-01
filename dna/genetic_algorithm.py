@@ -99,18 +99,20 @@ class GeneticAlgorithm:
            self.generate_children()
            i+=1
 
-    def get_results(self)->(RotTable, float): #returns the best table and its score
+    def get_results(self) -> tuple[RotTable, float]: #returns the best table and its score
         best_score = min(self.scores)
         min_index = self.scores.index(best_score)
+
         return self.population[min_index], best_score
     
-    def write_results(self, filename):
+    def write_results(self, filename: str):
         table, score=self.get_results()
         table.toJSON(filename)
+
 ##############################################################################################################
 
 
-def symmetrizeTable(incomplete_table: RotTable):
+def symmetrizeTable(incomplete_table: RotTable) -> RotTable:
     symmetry = {"AA":"TT","AC":"GT","AG":"CT","CA":"TG","CC":"GG","GA":"TC"}
     table = deepcopy(incomplete_table)
     for base_pair in symmetry:
@@ -157,7 +159,7 @@ def uniform_randomize(table: RotTable,seed = None) -> RotTable:
     return symmetrizeTable(new_table)
 
 
-def simple_crossover(parent1: RotTable, parent2: RotTable, seed=None):
+def simple_crossover(parent1: RotTable, parent2: RotTable, seed: int = None) -> tuple[RotTable, RotTable]:
     if seed is not None:
         random.seed(seed)
     cross_point = random.randint(1,9)
@@ -173,7 +175,7 @@ def simple_crossover(parent1: RotTable, parent2: RotTable, seed=None):
     return symmetrizeTable(child1), symmetrizeTable(child2)
 
 
-def double_crossover(parent1: RotTable, parent2: RotTable, seed=None):
+def double_crossover(parent1: RotTable, parent2: RotTable, seed: int = None) -> tuple[RotTable, RotTable]:
     if seed is not None:
         random.seed(seed)
     cross_point1 = random.randint(1,9)
@@ -200,7 +202,7 @@ def double_crossover(parent1: RotTable, parent2: RotTable, seed=None):
     return symmetrizeTable(child1), symmetrizeTable(child2)
 
 
-def mutate(table: RotTable,seed = None) -> RotTable:
+def mutate(table: RotTable, seed: int = None) -> RotTable:
     if seed is not None:
         random.seed(seed)
     mutated_table = deepcopy(table)
@@ -218,6 +220,6 @@ def mutate(table: RotTable,seed = None) -> RotTable:
     return symmetrizeTable(mutated_table)
 
 
-def evaluate_table(table,seq, traj): #passed the self.score to init
+def evaluate_table(table: RotTable, seq: set, traj: Traj3D) -> float: #passed the self.score to init
     # evaluation fonction : return a list where scores[i] is the distance between the last and first point using the rot_table i
     return traj.getEval(seq,table)
