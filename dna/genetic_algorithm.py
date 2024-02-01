@@ -17,15 +17,14 @@ class GeneticAlgorithm:
         self._populate()
         self.evaluate()
 
-    @property
-    # access to our population (list of rot_table)
+    @property # access to our population (list of rot_table)
     def population(self):
         return self._population
     
-    @population.setter
-    # allows modifying the population
+    @population.setter # allows modifying the population
     def population(self, new_population):
         self._population = new_population
+        self.__population_size = len(new_population)
 
     def _populate(self):
     # initialize a population with a uniform distribution around the og_table
@@ -65,7 +64,6 @@ class GeneticAlgorithm:
             new_population.append(a)
             new_score.append(s)
         self.population = new_population
-        self.__population_size = len(new_population)
         self.scores = new_score
 
     def generate_children(self):
@@ -102,7 +100,6 @@ class GeneticAlgorithm:
            self.generate_children()
            i+=1
 
-
     def get_results(self)->(RotTable, float): #returns the best table and its score
         best_score = min(self.scores)
         min_index = self.scores.index(best_score)
@@ -113,6 +110,7 @@ class GeneticAlgorithm:
         table.toJSON(filename)
 ##############################################################################################################
 
+
 def symmetrizeTable(incomplete_table: RotTable):
     symmetry = {"AA":"TT","AC":"GT","AG":"CT","CA":"TG","CC":"GG","GA":"TC"}
     table = deepcopy(incomplete_table)
@@ -122,6 +120,7 @@ def symmetrizeTable(incomplete_table: RotTable):
         table.setDirection(symmetry[base_pair], -table.getDirection(base_pair))
     
     return table
+
 
 def uniform_randomize(table: RotTable) -> RotTable:
     #uniform: (-2sigma,+2sigma)
@@ -158,22 +157,25 @@ def uniform_randomize(table: RotTable) -> RotTable:
     return symmetrizeTable(new_table)
 
 
-def simple_crossover(parent1: RotTable, parent2: RotTable, seed = None):
-        if seed is not None:
-            random.seed(seed)
-        cross_point = random.randint(1,9)
-        non_symmetric_elements = ["AA","AC","AG","CA","CC","GA","AT","GC","CG","TA"]
-        child1 = deepcopy(parent1)
-        child2 = deepcopy(parent2)
+def simple_crossover(parent1: RotTable, parent2: RotTable, seed=None):
+    if seed is not None:
+        random.seed(seed)
+    cross_point = random.randint(1,9)
+    non_symmetric_elements = ["AA","AC","AG","CA","CC","GA","AT","GC","CG","TA"]
+    child1 = deepcopy(parent1)
+    child2 = deepcopy(parent2)
 
-        for i in range(cross_point):
-            child1.setRow(non_symmetric_elements[i], parent2.getRow(non_symmetric_elements[i]))
-            
-            child2.setRow(non_symmetric_elements[i], parent1.getRow(non_symmetric_elements[i]))
+    for i in range(cross_point):
+        child1.setRow(non_symmetric_elements[i], parent2.getRow(non_symmetric_elements[i]))
         
-        return symmetrizeTable(child1), symmetrizeTable(child2)
+        child2.setRow(non_symmetric_elements[i], parent1.getRow(non_symmetric_elements[i]))
+    
+    return symmetrizeTable(child1), symmetrizeTable(child2)
 
-def double_crossover(parent1: RotTable, parent2: RotTable):
+
+def double_crossover(parent1: RotTable, parent2: RotTable, seed=None):
+    if seed is not None:
+        random.seed(seed)
     cross_point1 = random.randint(1,9)
     cross_point2 = random.randint(1,9)
     non_symmetric_elements = ["AA","AC","AG","CA","CC","GA","AT","GC","CG","TA"]
@@ -197,6 +199,7 @@ def double_crossover(parent1: RotTable, parent2: RotTable):
 
     return symmetrizeTable(child1), symmetrizeTable(child2)
 
+
 def mutate(table: RotTable) -> RotTable:
     mutated_table = deepcopy(table)
     non_symmetric_table = table.getNonSymmetric()
@@ -210,7 +213,6 @@ def mutate(table: RotTable) -> RotTable:
         mutated_table.setWedge(dinucleotide, random.gauss(wedge, non_symmetric_table[dinucleotide][4]))
 
     return symmetrizeTable(mutated_table)
-
 
 
 def evaluate_table(table,seq, traj): #passed the self.score to init
