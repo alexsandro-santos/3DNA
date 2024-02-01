@@ -201,12 +201,13 @@ def double_crossover(parent1: RotTable, parent2: RotTable, seed=None):
     return symmetrizeTable(child1), symmetrizeTable(child2)
 
 
-def mutate(table: RotTable) -> RotTable:
+def mutate(table: RotTable,seed = None) -> RotTable:
     mutated_table = deepcopy(table)
     non_symmetric_table = table.getNonSymmetric()
     dinucleotide = random.choice(list(non_symmetric_table.keys()))
-
+    print(dinucleotide)
     if random.randint(0,1):
+
         twist = mutated_table.getTwist(dinucleotide)
         mutated_table.setTwist(dinucleotide, random.gauss(twist, non_symmetric_table[dinucleotide][3]))
     else:
