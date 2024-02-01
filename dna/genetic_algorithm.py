@@ -68,6 +68,8 @@ class GeneticAlgorithm:
 
     def generate_children(self):
         #crossover
+        if self.seed is not None:
+            random.seed(self.seed)
         new_population = []
         final_population = []
         weights=[]
@@ -77,13 +79,15 @@ class GeneticAlgorithm:
             weights.append(max_score-score+1)
         for _ in range(0, self.__population_size, 2):
             parent1,parent2 = random.choices(self.population, k=2, weights=weights)
-            child1, child2 = double_crossover(parent1, parent2)
+            child1, child2 = double_crossover(parent1, parent2, seed=self.seed)
             new_population.extend([child1,child2])
 
+        if self.seed is not None:
+            random.seed(self.seed)
         #mutation of the children
         for table in new_population:
             if random.random() <= self.__mutation_prob:
-                final_population.append(mutate(table))
+                final_population.append(mutate(table, seed=self.seed))
                 final_scores.append(self.traj.getEval(self.seq,table))
             else:
                 final_population.append(table)
