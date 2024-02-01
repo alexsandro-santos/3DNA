@@ -2,6 +2,7 @@ import random
 from copy import deepcopy
 from .RotTable import RotTable
 from .Traj3D import Traj3D
+import numpy as np
 
 class GeneticAlgorithm:
     def __init__(self, population_size: int, og_table: RotTable, mutation_prob: float, seq: str, traj: Traj3D, seed = None) -> None:
@@ -93,8 +94,9 @@ class GeneticAlgorithm:
     def run(self):
        i = 0
        while i<100:
-           print(f"population size : {self.__population_size}")
+        #    print(f"population size : {self.__population_size}")
            print(f"best score : {min(self.scores)}")
+           print(f"average score :", np.average(self.scores))
            self.selection()
            self.generate_children()
            i+=1
@@ -208,7 +210,6 @@ def mutate(table: RotTable, seed: int = None) -> RotTable:
     mutated_table = deepcopy(table)
     non_symmetric_table = table.getNonSymmetric()
     dinucleotide = random.choice(list(non_symmetric_table.keys()))
-    print(dinucleotide)
     if random.randint(0,1):
 
         twist = mutated_table.getTwist(dinucleotide)
