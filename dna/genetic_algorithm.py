@@ -35,8 +35,7 @@ class GeneticAlgorithm:
         # evaluation fonction : return a list where scores[i] is the distance between the last and first point using the rot_table i
         new_scores = []
         for table in self.population:
-            self.traj.compute(self.seq,table)
-            new_scores += [self.traj.getEval()]
+            new_scores += [self.traj.getEval(self.seq,table)]
         self.scores = new_scores
     
     def selection(self):
@@ -219,5 +218,4 @@ def mutate(table: RotTable,seed = None) -> RotTable:
 
 def evaluate_table(table,seq, traj): #passed the self.score to init
     # evaluation fonction : return a list where scores[i] is the distance between the last and first point using the rot_table i
-    traj.compute(seq,table)
-    return traj.getEval()
+    return traj.getEval(seq,table)
