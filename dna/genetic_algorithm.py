@@ -35,8 +35,7 @@ class GeneticAlgorithm:
         # evaluation fonction : return a list where scores[i] is the distance between the last and first point using the rot_table i
         new_scores = []
         for table in self.population:
-            self.traj.compute(self.seq,table)
-            new_scores += [self.traj.getEval()]
+            new_scores += [self.traj.getEval(self.seq,table)]
         self.scores = new_scores
     
     def selection(self):
@@ -201,12 +200,13 @@ def double_crossover(parent1: RotTable, parent2: RotTable, seed=None):
     return symmetrizeTable(child1), symmetrizeTable(child2)
 
 
-def mutate(table: RotTable) -> RotTable:
+def mutate(table: RotTable,seed = None) -> RotTable:
     mutated_table = deepcopy(table)
     non_symmetric_table = table.getNonSymmetric()
     dinucleotide = random.choice(list(non_symmetric_table.keys()))
-
+    print(dinucleotide)
     if random.randint(0,1):
+
         twist = mutated_table.getTwist(dinucleotide)
         mutated_table.setTwist(dinucleotide, random.gauss(twist, non_symmetric_table[dinucleotide][3]))
     else:
@@ -218,5 +218,4 @@ def mutate(table: RotTable) -> RotTable:
 
 def evaluate_table(table,seq, traj): #passed the self.score to init
     # evaluation fonction : return a list where scores[i] is the distance between the last and first point using the rot_table i
-    traj.compute(seq,table)
-    return traj.getEval()
+    return traj.getEval(seq,table)

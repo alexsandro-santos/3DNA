@@ -8,7 +8,7 @@ class RotTable:
 
     # 3 first values: 3 angle values
     # 3 last values: SD values
-    
+
     #def __init__(self, filename: str = None):
         #if filename is None:
             #filename = os_path.join(here, 'table.json')
