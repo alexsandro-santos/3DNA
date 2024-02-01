@@ -70,15 +70,13 @@ class GeneticAlgorithm:
         #crossover
         new_population = []
         final_population = []
-        weights=[]
+        max_score = max(self.scores)
+        weights = [max_score - score for score in self.scores]
         final_scores=[]
-        max_score=max(self.scores)
-        for score in self.scores:
-            weights.append((max_score-score)/max_score+1)
         for _ in range(0, self.__population_size, 2):
-            parent1,parent2 = random.choices(self.population, k=2, weights=weights)
-            child1, child2 = double_crossover(parent1, parent2)
-            new_population.extend([child1,child2])
+            parent1,parent2 = random.choices(self.population, k=2, weights=self.scores)
+            child1, child2, child3, child4= simple_crossover(parent1, parent2)
+            new_population.extend([child1,child2, child3, child4])
 
         #mutation of the children
         for table in new_population:
@@ -88,15 +86,16 @@ class GeneticAlgorithm:
             else:
                 final_population.append(table)
                 final_scores.append(self.traj.getEval(self.seq,table))
-        self.population += final_population
-        self.scores += final_scores
+        self.population = final_population
+        self.scores = final_scores
         
     def run(self):
        i = 0
        while i<100:
-        #    print(f"population size : {self.__population_size}")
+           print(f"population size : {self.__population_size}")
            print(f"best score : {min(self.scores)}")
            print(f"average score :", np.average(self.scores))
+           print(f"scores : {self.scores}")
            self.selection()
            self.generate_children()
            i+=1
@@ -168,13 +167,22 @@ def simple_crossover(parent1: RotTable, parent2: RotTable, seed: int = None) -> 
     non_symmetric_elements = ["AA","AC","AG","CA","CC","GA","AT","GC","CG","TA"]
     child1 = deepcopy(parent1)
     child2 = deepcopy(parent2)
+    child3 = deepcopy(parent1)
+    child4 = deepcopy(parent2)
 
     for i in range(cross_point):
         child1.setRow(non_symmetric_elements[i], parent2.getRow(non_symmetric_elements[i]))
         
         child2.setRow(non_symmetric_elements[i], parent1.getRow(non_symmetric_elements[i]))
+
+    cross_point = random.randint(1,9) #update cross_point
+
+    for j in range(cross_point):
+        child3.setRow(non_symmetric_elements[j], parent2.getRow(non_symmetric_elements[j]))
+        
+        child4.setRow(non_symmetric_elements[j], parent1.getRow(non_symmetric_elements[j]))
     
-    return symmetrizeTable(child1), symmetrizeTable(child2)
+    return symmetrizeTable(child1), symmetrizeTable(child2), symmetrizeTable(child3), symmetrizeTable(child4)
 
 
 def double_crossover(parent1: RotTable, parent2: RotTable, seed: int = None) -> tuple[RotTable, RotTable]:
