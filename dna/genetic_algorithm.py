@@ -72,11 +72,9 @@ class GeneticAlgorithm:
             random.seed(self.seed)
         new_population = []
         final_population = []
-        weights=[]
         final_scores=[]
         max_score=max(self.scores)
-        for score in self.scores:
-            weights.append(max_score-score+1)
+        weights = [max_score-score+1 for score in self.scores]
         for _ in range(0, self.__population_size, 2):
             parent1,parent2 = random.choices(self.population, k=2, weights=weights)
             child1, child2 = double_crossover(parent1, parent2, seed=self.seed)
@@ -118,9 +116,8 @@ class GeneticAlgorithm:
 ##############################################################################################################
 
 
-def symmetrizeTable(incomplete_table: RotTable) -> RotTable:
+def symmetrizeTable(table: RotTable) -> RotTable:
     symmetry = {"AA":"TT","AC":"GT","AG":"CT","CA":"TG","CC":"GG","GA":"TC"}
-    table = deepcopy(incomplete_table)
     for base_pair in symmetry:
         table.setTwist(symmetry[base_pair], table.getTwist(base_pair))
         table.setWedge(symmetry[base_pair], table.getWedge(base_pair))
@@ -174,10 +171,12 @@ def simple_crossover(parent1: RotTable, parent2: RotTable, seed: int = None) -> 
     child2 = deepcopy(parent2)
 
     for i in range(cross_point):
-        child1.setRow(non_symmetric_elements[i], parent2.getRow(non_symmetric_elements[i]))
-        
-        child2.setRow(non_symmetric_elements[i], parent1.getRow(non_symmetric_elements[i]))
-    
+        child1.setTwist(non_symmetric_elements[i], parent2.getTwist(non_symmetric_elements[i]))
+        child1.setWedge(non_symmetric_elements[i], parent2.getWedge(non_symmetric_elements[i]))
+
+        child2.setTwist(non_symmetric_elements[i], parent1.getTwist(non_symmetric_elements[i]))
+        child2.setWedge(non_symmetric_elements[i], parent1.getWedge(non_symmetric_elements[i]))
+
     return symmetrizeTable(child1), symmetrizeTable(child2)
 
 
@@ -196,14 +195,18 @@ def double_crossover(parent1: RotTable, parent2: RotTable, seed: int = None) -> 
         cross_point1, cross_point2 = cross_point2, cross_point1
 
     for i in range(cross_point1):
-        child1.setRow(non_symmetric_elements[i], parent2.getRow(non_symmetric_elements[i]))
+        child1.setTwist(non_symmetric_elements[i], parent2.getTwist(non_symmetric_elements[i]))
+        child1.setWedge(non_symmetric_elements[i], parent2.getWedge(non_symmetric_elements[i]))
 
-        child2.setRow(non_symmetric_elements[i], parent1.getRow(non_symmetric_elements[i]))
+        child2.setTwist(non_symmetric_elements[i], parent1.getTwist(non_symmetric_elements[i]))
+        child2.setWedge(non_symmetric_elements[i], parent1.getWedge(non_symmetric_elements[i]))
         
     for j in range(cross_point2,10):
-        child1.setRow(non_symmetric_elements[j], parent2.getRow(non_symmetric_elements[j]))
+        child1.setTwist(non_symmetric_elements[j], parent2.getTwist(non_symmetric_elements[j]))
+        child1.setWedge(non_symmetric_elements[j], parent2.getWedge(non_symmetric_elements[j]))
 
-        child2.setRow(non_symmetric_elements[j], parent1.getRow(non_symmetric_elements[j]))
+        child2.setTwist(non_symmetric_elements[j], parent1.getTwist(non_symmetric_elements[j]))
+        child2.setWedge(non_symmetric_elements[j], parent1.getWedge(non_symmetric_elements[j]))
 
     return symmetrizeTable(child1), symmetrizeTable(child2)
 
@@ -221,4 +224,5 @@ def mutate(table: RotTable, seed: int = None) -> RotTable:
     else:
         wedge = mutated_table.getWedge(dinucleotide)
         mutated_table.setWedge(dinucleotide, random.gauss(wedge, non_symmetric_table[dinucleotide][4]))
+
     return symmetrizeTable(mutated_table)
