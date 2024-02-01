@@ -1,7 +1,6 @@
 from .RotTable import RotTable
 from .Traj3D import Traj3D
-# from .genetic_algorithm import *
-from .opti_genetic_algo import *
+from .genetic_algorithm import *
 import argparse
 parser = argparse.ArgumentParser()
 parser.add_argument("filename", help="input filename of DNA sequence")
