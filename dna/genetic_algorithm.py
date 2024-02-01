@@ -83,10 +83,10 @@ class GeneticAlgorithm:
         for table in new_population:
             if random.random() <= self.__mutation_prob:
                 final_population.append(mutate(table))
-                final_scores.append(evaluate_table(table,self.seq,self.traj))
+                final_scores.append(self.traj.getEval(self.seq,table))
             else:
                 final_population.append(table)
-                final_scores.append(evaluate_table(table,self.seq,self.traj))
+                final_scores.append(self.traj.getEval(self.seq,table))
         self.population += final_population
         self.scores += final_scores
         
@@ -218,8 +218,3 @@ def mutate(table: RotTable, seed: int = None) -> RotTable:
         mutated_table.setWedge(dinucleotide, random.gauss(wedge, non_symmetric_table[dinucleotide][4]))
 
     return symmetrizeTable(mutated_table)
-
-
-def evaluate_table(table: RotTable, seq: set, traj: Traj3D) -> float: #passed the self.score to init
-    # evaluation fonction : return a list where scores[i] is the distance between the last and first point using the rot_table i
-    return traj.getEval(seq,table)
