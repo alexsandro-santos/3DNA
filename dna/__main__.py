@@ -18,7 +18,8 @@ def main():
 
     ###### Parameters for Simulated Annealing ########
     init_temp = 1 # Initial temperature
-    max_time = 200 # Maximum execution time
+    max_time = 5 # Maximum execution time
+    coeff = 3    # Coefficient (see report)
     ##################################################
 
     rot_table = RotTable()
@@ -46,7 +47,7 @@ def main():
                 traj.compute(seq,table)
                 traj.draw()
             case 2:
-                recuit_simule(seq, traj, init_temp, max_time)
+                recuit_simule(seq, traj, init_temp, max_time, coeff)
                 print(traj.getLength2())
                 print(traj.getAngle())
                 traj.draw()
