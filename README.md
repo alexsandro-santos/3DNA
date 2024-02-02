@@ -1,4 +1,4 @@
-# ST2 (Théorie des Jeux) - EI Algorithmique Génétique
+# ST2 (Théorie des Jeux) - EI Algorithmique Génétique (Group 1)
 
 ![CentraleSupelec Logo](https://www.centralesupelec.fr/sites/all/themes/cs_theme/medias/common/images/intro/logo_nouveau.jpg)
 
