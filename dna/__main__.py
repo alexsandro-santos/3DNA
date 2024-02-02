@@ -53,11 +53,9 @@ def main():
             case _:
                 print('Invalid choice! Please choose 1 for Genetic algorithm and 2 for Simulated annealing')
 
-    except Exception as e:
+    except ValueError:
         print("Invalid command. You should use a command in the format 'python -m dna <number> <input_file>'")
-        
-    
-    
+
 
 if __name__ == "__main__" :
     main()
