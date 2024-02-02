@@ -97,7 +97,7 @@ class GeneticAlgorithm:
         for table in new_population:
             if random.random() <= self.__mutation_prob:
                 final_population.append(mutate(table, seed=self.seed))
-                final_scores.append(self.traj.getEval(self.seq,table))
+                final_scores.append(self.traj.getEval(self.seq,final_population[-1]))
             else:
                 final_population.append(table)
                 final_scores.append(self.traj.getEval(self.seq,table))
