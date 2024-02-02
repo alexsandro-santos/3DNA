@@ -25,4 +25,4 @@ On the other hand the genetic algorithm was implemented as a class <code> Geneti
 ### Exécution
 <code>python -m dna < algorithm_choice > < filepath_to_data > </code>
 
-Where the data can be plasmid_8k.fasta or plasmid_180k.fasta. And the algorithm_choice can be <code> 1 </code> for Recuit simulé or <code> 2 </code> for the genetic algorithm.
+Where the data can be plasmid_8k.fasta or plasmid_180k.fasta. And the algorithm_choice can be <code> 1 </code> for Genetic Algorithm or <code> 2 </code> for the Simulated Annealing.
