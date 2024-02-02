@@ -47,7 +47,7 @@ def main():
                 traj.draw()
             case 2:
                 recuit_simule(seq, traj, temp_init, temp_max)
-                print(traj.getLength())
+                print(traj.getLength2())
                 print(traj.getAngle())
                 traj.draw()
             case _:
