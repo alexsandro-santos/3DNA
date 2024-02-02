@@ -18,7 +18,7 @@ def main():
 
     ###### Parameters for Simulated Annealing ########
     init_temp = 1 # Initial temperature
-    max_time = 5 # Maximum execution time
+    max_time = 60 # Maximum execution time
     coeff = 3    # Coefficient (see report)
     ##################################################
 
