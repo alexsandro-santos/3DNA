@@ -19,8 +19,8 @@ def main():
     # Formatting
     seq = ''.join(lineList[1:])
     traj.compute(seq,rot_table)
-    recuit_simule(seq,traj,1,200)
-    print(traj.getLength())
+    recuit_simule(seq,traj,1,5)
+    print(traj.getLength2())
     print(traj.getAngle())
     traj.draw()
     traj.write(args.filename+".png")

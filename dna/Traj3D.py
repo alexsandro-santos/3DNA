@@ -91,7 +91,7 @@ class Traj3D:
     def write(self, filename: str):
         self.fig.savefig(filename)
         
-    def getLength(self) -> float:
+    def getLength2(self) -> float:
         start,end= self.__Traj3D[0],self.__Traj3D[-1]
         return np.linalg.norm(end-start)
 
@@ -115,7 +115,7 @@ class Traj3D:
     
     # Nous avons réalisé une petite optimisation concernant getLength. Nous avons copié la fonction compute mais qui réalise moins de produits matriciels.
     # Plus précisément on multiplie que des matrices et on ne calcule que le dernier point. On n'effectue donc presque pas de produit matrice-vecteur.
-    def getLength2(self, dna_seq, rot_table) -> float:
+    def getLength(self, dna_seq, rot_table) -> float:
     # Matrice cumulant l'ensemble des transformations géométriques engendrées par la séquence d'ADN
         total_matrix = np.eye(4)  # Identity matrix
 
