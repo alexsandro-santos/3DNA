@@ -1,4 +1,4 @@
-# ST2 (Théorie des Jeux) - EI Algorithmique Génétique
+# ST2 (Théorie des Jeux) - EI Algorithmique Génétique (Group 1)
 
 ![CentraleSupelec Logo](https://www.centralesupelec.fr/sites/all/themes/cs_theme/medias/common/images/intro/logo_nouveau.jpg)
 
@@ -18,7 +18,7 @@ In order to solve this problem we applied to different algorithms: Recuit simul�
 
 ### Initialization and Changing the parameters of the Algorithms:
 
-The recuit simulé algorithm takes is implemented as a function, which takes the following variables in order: dna sequence, a trajectory, initial temperature and max running time (the 2 last ones greater than 0). The defaults parameters can be changed on the lines 20 and 21 in __main__, in the section Parameters for Simulated Annealing.
+The recuit simulé algorithm takes is implemented as a function <code>recuit_simule()</code>, which takes the following variables in order: dna sequence, a trajectory, initial temperature and max running time (the 2 last ones greater than 0). The defaults parameters can be changed on the lines 20 and 21 in __main__, in the section Parameters for Simulated Annealing.
 
 On the other hand the genetic algorithm was implemented as a class <code> GeneticAlgorithm() </code> , it takes the following parameters in order: population size, table of rotations, mutation rate (between 0 and 1), a genetic sequence and a trajectory. The default parameters can be changed on the lines 14 and 15 in __main__, in the section Paramters for Genetic Algorithm.
 
