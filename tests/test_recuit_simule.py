@@ -53,7 +53,7 @@ class TestRecuitSimule(unittest.TestCase):
         # Formatting
         seq = ''.join(lineList[1:])
         traj.compute(seq,rot_table)
-        recuit_simule(seq,traj,1,20)
+        recuit_simule(seq,traj,1,30)
         result = traj.getLength()
         self.assertLessEqual(result, 100)           # Compliqué de tester quelque chose dans lequel il y a de l'aléatoire, mais j'ai mis 100 je pense que c'est une valeur raisonnable dans le sens où on part de 5000 et qu'on veut un test rapide 
          

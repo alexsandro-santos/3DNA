@@ -75,12 +75,12 @@ def recuit_simule(seq, trajectoire, temp_init, temps_max):
         temps = 0
         table = RotTable()
         eval = trajectoire.getLength2(seq, table)
-        coeff = 3
+        coeff = 2
         temperature = temp_init
         while(temps < temps_max and temperature > 0.1):
                 nombre_aleatoire = uniform(0,1) # On choisit un nombre uniformement dans [0,1]
                 for table_n in voisins(table, coeff*nombre_aleatoire): # Pour tous les voisins de la table s, on calcule sa trajectoire ainsi que son énergie
-                        # trajectoire.compute(seq, table_n) 
+                        # trajectoire.compute(seq, table_n)            # On compute dans getLength2 (on ne calcule pas toute la trajectoire mais juste le dernier point pour gagner un peu de temps)
                         eval_n = trajectoire.getLength2(seq, table_n)
                         if (eval_n < eval or nombre_aleatoire < math.exp((eval-eval_n)/temperature)):            
                                 print("on s'est amélioré de", eval-eval_n)
