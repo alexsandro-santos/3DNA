@@ -13,7 +13,7 @@ The model was developed for short, naked DNA sequences, it does not take into ac
 ## Objective Function
 We choose as our objective function the distance between the start and end point. The Problem is equivalent to the optimization problem of minimizing the distance as a function of the table parameters.
 
-## Code:
+## Code
 In order to solve this problem we applied to different algorithms: Recuit simulé and a Genetic Algorithm, its implementation can be visited in the respective python files genetic_algorithm.py, recuit_simule.py. Some minor changes were done in RotTable and Traj3D, we added new methods to facilitate the calculation of our objective function (The distance between start and end-point), and the access and exportation of the tables that we worked on.
 
 ### Initialization and Changing the parameters of the Algorithms:
