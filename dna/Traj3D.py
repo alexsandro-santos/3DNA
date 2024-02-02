@@ -174,3 +174,10 @@ class Traj3D:
         #     return 10000
         # else:
         return self.getLength(dna_seq, rot_table)
+    
+    
+    def getLength2(self) -> float:
+        start,end= self.__Traj3D[0],self.__Traj3D[-1]
+        return np.linalg.norm(end-start)
+    
+
