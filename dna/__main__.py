@@ -18,7 +18,7 @@ def main():
 
     ###### Parameters for Simulated Annealing ########
     init_temp = 1 # Initial temperature
-    max_time = 60 # Maximum execution time
+    max_time = 120 # Maximum execution time
     coeff = 3    # Coefficient (see report)
     ##################################################
 
@@ -48,8 +48,8 @@ def main():
                 traj.draw()
             case 2:
                 recuit_simule(seq, traj, init_temp, max_time, coeff)
-                print(traj.getLength2())
-                print(traj.getAngle())
+                print("Distance finale", traj.getLength2())
+                print("Cosinus de l'angle", traj.getAngle())
                 traj.draw()
             case _:
                 print('Invalid choice! Please choose 1 for Genetic algorithm and 2 for Simulated annealing')
