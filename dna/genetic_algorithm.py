@@ -131,6 +131,7 @@ class GeneticAlgorithm:
 
 def symmetrizeTable(table: RotTable) -> RotTable:
     '''Fix the symmetry of the elements of `table`. This function
+    makes sure the symmetry property is conserved and therefore
     allows us to do calculations with less elements of `table`.'''
     symmetry = {"AA":"TT","AC":"GT","AG":"CT","CA":"TG","CC":"GG","GA":"TC"}
     for base_pair in symmetry:
