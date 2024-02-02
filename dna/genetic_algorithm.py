@@ -18,55 +18,64 @@ class GeneticAlgorithm:
         self._populate()
         self.evaluate()
 
+
     @property # access to our population (list of rot_table)
     def population(self):
         return self._population
-    
+
+
     @population.setter # allows modifying the population
     def population(self, new_population):
-        self._population = new_population
         self.__population_size = len(new_population)
+        self._population = new_population
 
     def _populate(self):
-    # initialize a population with a uniform distribution around the og_table
+        '''Initialize `population` with a uniform distribution
+        around `og_table`.'''
+
         self.population.append(self.og_table)
         self.population.extend([uniform_randomize(self.og_table) for _ in range(self.__population_size - 1)])
 
-    def evaluate(self): #passed the self.score to init
-        # evaluation fonction : return a list where scores[i] is the distance between the last and first point using the rot_table i
+
+    def evaluate(self):
+        '''Calculate and set the `scores` attribute. A score is
+        the distance between the last and first point of a `RotTable`
+        object in the position `i` of `population`.'''
+
         new_scores = []
         for table in self.population:
             new_scores += [self.traj.getEval(self.seq,table)]
         self.scores = new_scores
-    
+
+
     def selection(self):
-        populations = self.population
-        score = self.scores
-        population_score = [(populations[i],score[i]) for i in range(len(self.population))]
+        '''Update `population` by performing a selection by tournament.'''
+
         new_population = []
         new_score = []
-        while(len(population_score)>1):
-            two_random_elements = random.sample(population_score, 2)
-            for element in two_random_elements:
-                population_score.remove(element)
-            t1,s1 = two_random_elements[0]
-            t2,s2 = two_random_elements[1]
-            if (s1>s2):
-                new_population.append(t2)
-                new_score.append(s2)
-                #print(f"les élements aléatoires : {deux_elements_aleatoires}, le selectionné : {(t2,s2)}")
+
+        while len(self.population) > 1: # The loop breaks after everyone "fights"
+            rand_i_1 = random.randint(0,len(self.population)-1)
+            table_1 = self.population.pop(rand_i_1)
+            score_1 = self.scores.pop(rand_i_1)
+
+            rand_i_2 = random.randint(0,len(self.population)-1)
+            table_2 = self.population.pop(rand_i_2)
+            score_2 = self.scores.pop(rand_i_2)
+
+            if score_1 > score_2: # The one with a bigger score is eliminated (bigger distance)
+                new_population.append(table_2)
+                new_score.append(score_2)
             else:
-                new_population.append(t1)
-                new_score.append(s1)
-                #print(f"les élements aléatoires : {deux_elements_aleatoires}, le selectionné : {(t1,s1)}")
-        for element in population_score: #Maybe change this, if we have an odd number of population,we keep the one who didn't fight 
-            a,s = element
-            new_population.append(a)
-            new_score.append(s)
-        self.population = new_population
-        self.scores = new_score
+                new_population.append(table_1)
+                new_score.append(score_1)
+
+        self.population += new_population
+        self.scores += new_score
+
 
     def generate_children(self):
+        '''Do the crossover and the mutation in the population.'''
         #crossover
         if self.seed is not None:
             random.seed(self.seed)
@@ -75,7 +84,7 @@ class GeneticAlgorithm:
         final_scores=[]
         max_score=max(self.scores)
         weights = [max_score-score+1 for score in self.scores]
-        for _ in range(0, self.__population_size, 2):
+        for _ in range(0, len(self.population), 2):
             parent1,parent2 = random.choices(self.population, k=2, weights=weights)
             child1, child2 = double_crossover(parent1, parent2, seed=self.seed)
             new_population.extend([child1,child2])
@@ -92,31 +101,37 @@ class GeneticAlgorithm:
                 final_scores.append(self.traj.getEval(self.seq,table))
         self.population += final_population
         self.scores += final_scores
-        
+
+
     def run(self):
+       '''Run the algorithm.'''
        i = 0
        while i<100:
-        #    print(f"population size : {self.__population_size}")
            print(f"best score : {min(self.scores)}")
            print(f"average score :", np.average(self.scores))
            self.selection()
            self.generate_children()
            i+=1
 
-    def get_results(self) -> tuple[RotTable, float]: #returns the best table and its score
+    def get_results(self) -> tuple[RotTable, float]:
+        '''Return the best table and its score.'''
         best_score = min(self.scores)
         min_index = self.scores.index(best_score)
 
         return self.population[min_index], best_score
-    
+
+
     def write_results(self, filename: str):
-        table, score=self.get_results()
+        '''Create a .json file with the result of the algorithm execution'''
+        table, _ = self.get_results()
         table.toJSON(filename)
 
 ##############################################################################################################
 
 
 def symmetrizeTable(table: RotTable) -> RotTable:
+    '''Fix the symmetry of the elements of `table`. This function
+    allows us to do calculations with less elements of `table`.'''
     symmetry = {"AA":"TT","AC":"GT","AG":"CT","CA":"TG","CC":"GG","GA":"TC"}
     for base_pair in symmetry:
         table.setTwist(symmetry[base_pair], table.getTwist(base_pair))
@@ -125,7 +140,10 @@ def symmetrizeTable(table: RotTable) -> RotTable:
     
     return table
 
+
 def uniform_randomize(table: RotTable,seed = None) -> RotTable:
+    '''Create a randomized variation of `table`
+    using a uniform distribution.'''
     if seed is not None:
         random.seed(seed)
     #uniform: (-2sigma,+2sigma)
@@ -163,6 +181,7 @@ def uniform_randomize(table: RotTable,seed = None) -> RotTable:
 
 
 def simple_crossover(parent1: RotTable, parent2: RotTable, seed: int = None) -> tuple[RotTable, RotTable]:
+    '''Perform a 1-point crossover between two tables.'''
     if seed is not None:
         random.seed(seed)
     cross_point = random.randint(1,9)
@@ -181,6 +200,7 @@ def simple_crossover(parent1: RotTable, parent2: RotTable, seed: int = None) -> 
 
 
 def double_crossover(parent1: RotTable, parent2: RotTable, seed: int = None) -> tuple[RotTable, RotTable]:
+    '''Perform a 2-point crossover between two tables.'''
     if seed is not None:
         random.seed(seed)
     cross_point1 = random.randint(1,9)
@@ -212,13 +232,15 @@ def double_crossover(parent1: RotTable, parent2: RotTable, seed: int = None) -> 
 
 
 def mutate(table: RotTable, seed: int = None) -> RotTable:
+    '''Perform a mutation to a random element of a random
+    row of `table`'''
     if seed is not None:
         random.seed(seed)
     mutated_table = deepcopy(table)
     non_symmetric_table = table.getNonSymmetric()
     dinucleotide = random.choice(list(non_symmetric_table.keys()))
-    if random.randint(0,1):
 
+    if random.randint(0,1):
         twist = mutated_table.getTwist(dinucleotide)
         mutated_table.setTwist(dinucleotide, random.gauss(twist, non_symmetric_table[dinucleotide][3]))
     else:
