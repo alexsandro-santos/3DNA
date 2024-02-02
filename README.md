@@ -51,10 +51,10 @@ In order to solve this problem we applied to different algorithms: Recuit simul�
 
 ### Initialization and Changing the parameters of the Algorithms:
 
-On the other hand the genetic algorithm was implemented as a class <code> GeneticAlgorithm() <\code>, it takes the following parameters in order: population size, table of rotations, mutation rate (between 0 and 1), a genetic sequence and a traject. The default parameters can be changed on the lines 14 and 15 of the __main__.py file, in the section Paramters for Genetic Algorithm.
+On the other hand the genetic algorithm was implemented as a class <code> GeneticAlgorithm() </code> , it takes the following parameters in order: population size, table of rotations, mutation rate (between 0 and 1), a genetic sequence and a traject. The default parameters can be changed on the lines 14 and 15 in __main__, in the section Paramters for Genetic Algorithm.
 
 ### Exécution
-<code>python -m dna < algorithm choice > < filepath to data > <\code>
+<code>python -m dna < algorithm choice > < filepath to data > </code>
 
-Where the data can be plasmid_8k.fasta or plasmid_180k.fasta. And the algorithm choice can be <code> 1 <\code> for Recuit simulé or <code> 2 <\code> for the genetic algorithm.
+Where the data can be plasmid_8k.fasta or plasmid_180k.fasta. And the algorithm choice can be <code> 1 <\code> for Recuit simulé or <code> 2 </code> for the genetic algorithm.
 
