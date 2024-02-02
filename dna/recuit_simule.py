@@ -70,12 +70,11 @@ def voisins(table:RotTable, p: float):
                
                
                
-def recuit_simule(seq, trajectoire, temp_init, temps_max):
+def recuit_simule(seq, trajectoire, temp_init, temps_max, coeff = 3):
         tps_init = time.process_time()          # Permet de calculer le temps passé 
         temps = 0
         table = RotTable()
         eval = trajectoire.getLength(seq, table)
-        coeff = 2
         temperature = temp_init
         while(temps < temps_max and temperature > 0.1):
                 nombre_aleatoire = uniform(0,1) # On choisit un nombre uniformement dans [0,1]
