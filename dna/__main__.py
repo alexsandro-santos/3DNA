@@ -1,6 +1,7 @@
 from .RotTable import RotTable
 from .Traj3D import Traj3D
 from .genetic_algorithm import *
+from .recuit_simule import *
 import argparse
 parser = argparse.ArgumentParser()
 parser.add_argument("algo_choice", help="key to the desired algorithm to be executed (1 - Genetic algorithm, 2 - Simulated annealing)")
@@ -10,10 +11,16 @@ args = parser.parse_args()
 
 def main():
 
-    ###### Parameters for Genetic Algorithm ##########
+    ####### Parameters for Genetic Algorithm #########
     population_size = 40 # Size of the population
     mutation_prob = 0.3 # Mutation probabality
     ##################################################
+
+    ###### Parameters for Simulated Annealing ########
+    temp_init = 1 # Initial temperature
+    temp_max = 200 # Maximum temperature
+    ##################################################
+
     rot_table = RotTable()
     traj = Traj3D()
 
@@ -23,8 +30,9 @@ def main():
     seq = ''.join(lineList[1:])
     traj.compute(seq, rot_table)
 
+    choice = args.algo_choice
     try:
-        match int(args.algo_choice):
+        match int(choice):
             case 1:
                 algo = GeneticAlgorithm(population_size, rot_table, mutation_prob, seq, traj)
                 algo.run()
@@ -36,6 +44,11 @@ def main():
 
                 table=RotTable("./dna/results.json")
                 traj.compute(seq,table)
+                traj.draw()
+            case 2:
+                recuit_simule(seq, traj, temp_init, temp_max)
+                print(traj.getLength())
+                print(traj.getAngle())
                 traj.draw()
             case _:
                 print('Invalid choice! Please choose 1 for Genetic algorithm and 2 for Simulated annealing')
