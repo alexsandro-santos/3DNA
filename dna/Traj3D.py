@@ -99,6 +99,8 @@ class Traj3D:
     def write(self, filename: str):
         self.fig.savefig(filename)
 
+    # Nous avons réalisé une petite optimisation concernant getLength. Nous avons copié la fonction compute mais qui réalise moins de produits matriciels.
+    # Plus précisément on multiplie que des matrices et on ne calcule que le dernier point. On n'effectue donc presque pas de produit matrice-vecteur.
     def getLength(self, dna_seq, rot_table) -> float:
     # Matrice cumulant l'ensemble des transformations géométriques engendrées par la séquence d'ADN
         total_matrix = np.eye(4)  # Identity matrix
