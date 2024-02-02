@@ -15,7 +15,7 @@ class RotTable:
         #self.rot_table = json.load(open(filename))
 
 
-    def __init__(self, filename: str = None): #I modified the way we init a rottable to close the file after we reading it
+    def __init__(self, filename: str = None): #I modified the way we init a Rottable to close the file after we reading it (error in test functions)
         if filename is None:
             filename = os_path.join(here, 'table.json')
         with open(filename) as file:

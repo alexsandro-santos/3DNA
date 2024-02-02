@@ -5,6 +5,8 @@ from .Traj3D import Traj3D
 import numpy as np
 
 class GeneticAlgorithm:
+    #GeneticAlgortihm est une classe qui permettra de réaliser notre algorithme génétique. Elle contient plusieurs paramètres qui sont :
+    #La population qui represente une liste de table de rotation, la taille de cette liste. une liste qui represente les scores des table dans population
     def __init__(self, population_size: int, og_table: RotTable, mutation_prob: float, seq: str, traj: Traj3D, seed = None) -> None:
         self.__population_size = population_size
         self._population = []
