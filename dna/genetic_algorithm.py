@@ -46,7 +46,7 @@ class GeneticAlgorithm:
 
         new_scores = []
         for table in self.population:
-            new_scores += [self.traj.getLength(self.seq,table)]
+            new_scores += [self.traj.getLength(self.seq,table)] #getEval()
         self.scores = new_scores
 
 
@@ -97,10 +97,10 @@ class GeneticAlgorithm:
         for table in new_population:
             if random.random() <= self.__mutation_prob:
                 final_population.append(mutate(table, seed=self.seed))
-                final_scores.append(self.traj.getLength(self.seq,final_population[-1]))
+                final_scores.append(self.traj.getLength(self.seq,final_population[-1])) #getEval()
             else:
                 final_population.append(table)
-                final_scores.append(self.traj.getLength(self.seq,table))
+                final_scores.append(self.traj.getLength(self.seq,table)) #getEval()
         self.population += final_population
         self.scores += final_scores
 
